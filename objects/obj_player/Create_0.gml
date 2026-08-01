@@ -1,66 +1,67 @@
 vel = 2;
+
 velh = 0;
 velv = 0;
 
-direita     = noone;
-esquerda    = noone;
-cima        = noone;
-baixo       = noone;
+direita  = false;
+esquerda = false;
+cima     = false;
+baixo    = false;
+
+input_h = 0;
+input_v = 0;
+
+time_manager = noone;
+
 
 enum PlayerEstados
 {
     parado,
-    andando,
+    andando
 }
 
 estado = PlayerEstados.parado;
 
+
 controles = function()
 {
-    direita     = keyboard_check(vk_right) or keyboard_check(ord("D"));
-    esquerda    = keyboard_check(vk_left) or keyboard_check(ord("A"));
-    cima        = keyboard_check(vk_up) or keyboard_check(ord("W"));
-    baixo       = keyboard_check(vk_down) or keyboard_check(ord("S"));
-    
-    //velh = (direita - esquerda) * vel;
-    //velv = (baixo - cima) * vel;
-    var dir = point_direction(0,0, direita - esquerda, baixo - cima);
-    
-    if (direita xor esquerda or baixo xor cima)
-    {
-        velh = lengthdir_x(vel, dir);
-        velv = lengthdir_y(vel, dir);
-        
-    }
-    else {
-        velh = 0;
-        velv = 0;
-    }
-}
+    direita =
+        keyboard_check(vk_right)
+        or keyboard_check(ord("D"));
 
-maquina_estados = function() 
+    esquerda =
+        keyboard_check(vk_left)
+        or keyboard_check(ord("A"));
+
+    cima =
+        keyboard_check(vk_up)
+        or keyboard_check(ord("W"));
+
+    baixo =
+        keyboard_check(vk_down)
+        or keyboard_check(ord("S"));
+
+    input_h = direita - esquerda;
+    input_v = baixo - cima;
+
+    scr_actor_apply_input(
+        input_h,
+        input_v,
+        vel
+    );
+};
+
+
+maquina_estados = function()
 {
-    switch (estado) 
+    controles();
+
+    if (input_h == 0 && input_v == 0)
     {
-    	case PlayerEstados.parado: 
-        {
-            controles();
-            if (direita xor esquerda or cima xor baixo)
-            {
-                estado = PlayerEstados.andando;
-            }
-            break;
-        }
-            
-        case PlayerEstados.andando: 
-        {
-            controles();
-            if (velh == 0 and velv == 0)
-            {
-                estado = PlayerEstados.parado
-            }
-            
-            break;
-        }  
+        estado = PlayerEstados.parado;
     }
-}
+    else
+    {
+        estado = PlayerEstados.andando;
+    }
+};
