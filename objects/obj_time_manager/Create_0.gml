@@ -11,12 +11,24 @@ max_frames = 60 * 15;
 
 gravando = true;
 eco_criado = false;
+eco_id = noone;
+
+vitoria = false;
 
 
-// Registra qual instância será controlada pelo sistema temporal.
+//==================================================
+// REGISTRAR PLAYER
+//==================================================
+
 registrar_player = function(_player_id)
 {
     if (!instance_exists(_player_id))
+    {
+        return;
+    }
+
+    // Evita redefinir o início constantemente.
+    if (instance_exists(playerid))
     {
         return;
     }
@@ -28,15 +40,13 @@ registrar_player = function(_player_id)
 };
 
 
-// Guarda um comando por frame.
+//==================================================
+// GRAVAR COMANDO
+//==================================================
+
 gravar_comando = function(_input_h, _input_v)
 {
-    if (!gravando)
-    {
-        return;
-    }
-
-    if (eco_criado)
+    if (!gravando || eco_criado || vitoria)
     {
         return;
     }
@@ -54,10 +64,13 @@ gravar_comando = function(_input_h, _input_v)
 };
 
 
-// Cria um eco de teste reproduzindo a gravação inteira.
+//==================================================
+// CRIAR ECO
+//==================================================
+
 criar_eco_teste = function()
 {
-    if (eco_criado)
+    if (eco_criado || vitoria)
     {
         return noone;
     }
@@ -93,21 +106,63 @@ criar_eco_teste = function()
 
     var _player_layer = (playerid).layer;
 
-    var _echo = instance_create_layer(
+    eco_id = instance_create_layer(
         inicio_x,
         inicio_y,
         _player_layer,
         obj_echo
     );
 
-    (_echo).comandos_h = _copia_h;
-    (_echo).comandos_v = _copia_v;
+    (eco_id).comandos_h = _copia_h;
+    (eco_id).comandos_v = _copia_v;
 
-    (_echo).frame_reproducao = 0;
-    (_echo).reproduzindo = true;
+    (eco_id).frame_reproducao = 0;
+    (eco_id).reproduzindo = true;
+
+    // Simula a criação de uma nova linha temporal.
+    (playerid).x = inicio_x;
+    (playerid).y = inicio_y;
+
+    (playerid).velh = 0;
+    (playerid).velv = 0;
+
+    (playerid).input_h = 0;
+    (playerid).input_v = 0;
 
     eco_criado = true;
     gravando = false;
 
-    return _echo;
+    return eco_id;
+};
+
+
+//==================================================
+// CONCLUIR MVP
+//==================================================
+
+concluir_mvp = function()
+{
+    if (vitoria)
+    {
+        return;
+    }
+
+    vitoria = true;
+    gravando = false;
+
+    if (instance_exists(playerid))
+    {
+        (playerid).velh = 0;
+        (playerid).velv = 0;
+
+        (playerid).input_h = 0;
+        (playerid).input_v = 0;
+    }
+
+    if (instance_exists(eco_id))
+    {
+        (eco_id).velh = 0;
+        (eco_id).velv = 0;
+        (eco_id).reproduzindo = false;
+    }
 };
