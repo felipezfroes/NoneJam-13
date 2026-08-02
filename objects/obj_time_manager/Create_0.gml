@@ -11,6 +11,7 @@ max_frames = 60 * 15;
 
 gravando = true;
 eco_criado = false;
+vitoria = false;
 
 
 // Registra qual instância será controlada pelo sistema temporal.
@@ -31,12 +32,7 @@ registrar_player = function(_player_id)
 // Guarda um comando por frame.
 gravar_comando = function(_input_h, _input_v)
 {
-    if (!gravando)
-    {
-        return;
-    }
-
-    if (eco_criado)
+    if (!gravando || eco_criado || vitoria)
     {
         return;
     }
@@ -54,10 +50,10 @@ gravar_comando = function(_input_h, _input_v)
 };
 
 
-// Cria um eco de teste reproduzindo a gravação inteira.
+// Cria um eco reproduzindo a gravação inteira e devolve o player ao início.
 criar_eco_teste = function()
 {
-    if (eco_criado)
+    if (eco_criado || vitoria)
     {
         return noone;
     }
@@ -102,12 +98,40 @@ criar_eco_teste = function()
 
     (_echo).comandos_h = _copia_h;
     (_echo).comandos_v = _copia_v;
-
     (_echo).frame_reproducao = 0;
     (_echo).reproduzindo = true;
+
+    // O jogador atual começa uma nova linha a partir do mesmo ponto do eco.
+    (playerid).x = inicio_x;
+    (playerid).y = inicio_y;
+    (playerid).velh = 0;
+    (playerid).velv = 0;
+    (playerid).input_h = 0;
+    (playerid).input_v = 0;
 
     eco_criado = true;
     gravando = false;
 
     return _echo;
+};
+
+
+// Marca o objetivo do MVP como concluído.
+concluir_mvp = function()
+{
+    if (vitoria)
+    {
+        return;
+    }
+
+    vitoria = true;
+    gravando = false;
+
+    if (instance_exists(playerid))
+    {
+        (playerid).velh = 0;
+        (playerid).velv = 0;
+        (playerid).input_h = 0;
+        (playerid).input_v = 0;
+    }
 };
