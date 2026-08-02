@@ -48,10 +48,10 @@ if (velh != 0 || velv != 0)
     {
         vfx_timer = 0;
 
-        var _vfx = instance_create_layer(
+        var _vfx = instance_create_depth(
             x,
             y,
-            layer,
+            depth + 2,
             obj_echo_vfx
         );
 
@@ -63,12 +63,13 @@ if (velh != 0 || velv != 0)
         (_vfx).image_xscale = image_xscale;
         (_vfx).image_yscale = image_yscale;
         (_vfx).image_angle = image_angle;
+        
+        (_vfx).depth =
+        -floor((_vfx).bbox_bottom)
+        + 2;
 
         // Mesmo ciano utilizado pelo eco.
         (_vfx).image_blend = cor_eco;
         (_vfx).image_alpha = 0.45;
-
-        // Mantém o rastro visualmente atrás do eco.
-        (_vfx).depth = depth + 1;
     }
 }

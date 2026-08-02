@@ -3,3 +3,5 @@ move_and_collide(
     velv,
     obj_colisor
 );
+
+scr_atualizar_profundidade(id, 0);

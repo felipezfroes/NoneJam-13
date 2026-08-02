@@ -104,18 +104,23 @@ criar_eco_teste = function()
         frame_gravacao
     );
 
-    var _player_layer = (playerid).layer;
-
-    eco_id = instance_create_layer(
+    //==================================================
+    // CRIAR ECO
+    //==================================================
+    
+    var _profundidade_inicial =
+        -floor(inicio_y);
+    
+    eco_id = instance_create_depth(
         inicio_x,
         inicio_y,
-        _player_layer,
+        _profundidade_inicial,
         obj_echo
     );
-
+    
     (eco_id).comandos_h = _copia_h;
     (eco_id).comandos_v = _copia_v;
-
+    
     (eco_id).frame_reproducao = 0;
     (eco_id).reproduzindo = true;
 

@@ -1,7 +1,6 @@
 pressionada =
     place_meeting(x, y, obj_player)
-    or place_meeting(x, y, obj_echo)
-    or place_meeting(x, y, obj_box);
+    or place_meeting(x, y, obj_echo);
 
 if (pressionada)
 {

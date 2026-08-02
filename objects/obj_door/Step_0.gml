@@ -8,3 +8,5 @@ else
     image_alpha = 0.35;
     image_index = 0;
 }
+
+scr_atualizar_profundidade(id, 0);

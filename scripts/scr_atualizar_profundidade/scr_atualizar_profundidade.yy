@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_atualizar_profundidade",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_atualizar_profundidade",
+  "parent":{
+    "name":"Scripts",
+    "path":"folders/Scripts.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

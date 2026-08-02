@@ -15,3 +15,5 @@ fechar_porta = function ()
         image_index = 0;
     }
 }
+
+depth = 50;

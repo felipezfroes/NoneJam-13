@@ -1,0 +1,15 @@
+O Relógio das Consequências — Protótipo
+
+Objetivo:
+Alcance a saída.
+
+Controles:
+WASD — mover
+E — empurrar/interagir
+SPACE — criar eco
+R — reiniciar
+
+Depois de jogar, responda:
+• Onde você ficou com dúvida?
+• O que entendeu sobre o eco?
+• Encontrou algum bug?
