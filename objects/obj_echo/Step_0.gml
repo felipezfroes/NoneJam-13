@@ -34,3 +34,11 @@ scr_actor_apply_input(
 );
 
 frame_reproducao++;
+
+if (image_number mod 4)
+{
+    var inst = instance_create_layer(x,y, "Instances", obj_echo_vfx);
+    inst.sprite_index = sprite_index;
+    inst.image_index = image_index;
+    inst.image_speed = 0;
+}

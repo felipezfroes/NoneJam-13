@@ -36,8 +36,8 @@ else if (!eco_criado)
     draw_text(
         _gui_x,
         _gui_y,
-        "1. Grave um caminho ate a placa."
-        + "\n2. SPACE: criar o eco."
+        "OBJETIVO: alcance a porta"
+        + "\n2. SPACE: eco."
         + "\nR: reiniciar"
     );
 }
