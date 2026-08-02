@@ -59,23 +59,22 @@ if (instance_exists(time_manager))
     {
         (time_manager).criar_eco_teste();
     }
+}
 
-    // EMPURRAR CAIXA
-    
-    if (
-        (time_manager).eco_criado
-        && keyboard_check_pressed(ord("E"))
-    )
+//==================================================
+// EMPURRAR CAIXA
+//==================================================
+
+if (keyboard_check_pressed(ord("E")))
+{
+    var _caixa = instance_nearest(
+        x,
+        y,
+        obj_box
+    );
+
+    if (instance_exists(_caixa))
     {
-        var _caixa = instance_nearest(
-            x,
-            y,
-            obj_box
-        );
-    
-        if (instance_exists(_caixa))
-        {
-            (_caixa).empurrar(id);
-        }
+        (_caixa).empurrar(id);
     }
 }

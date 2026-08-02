@@ -1,3 +1,5 @@
+sprite_index = obj_player.sprite_index;
+
 if (!reproduzindo)
 {
     velh = 0;
