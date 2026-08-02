@@ -1,18 +1,21 @@
 {
   "$GMObject":"",
-  "%Name":"obj_pressure_plate",
+  "%Name":"obj_box_pressure_plate",
   "eventList":[
-    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
+    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
   ],
   "managed":true,
-  "name":"obj_pressure_plate",
+  "name":"obj_box_pressure_plate",
   "overriddenProperties":[],
   "parent":{
     "name":"Objects",
     "path":"folders/Objects.yy",
   },
-  "parentObjectId":null,
+  "parentObjectId":{
+    "name":"par_pressure_plate",
+    "path":"objects/par_pressure_plate/par_pressure_plate.yy",
+  },
   "persistent":false,
   "physicsAngularDamping":0.1,
   "physicsDensity":0.5,
@@ -31,8 +34,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_pressure_plate",
-    "path":"sprites/spr_pressure_plate/spr_pressure_plate.yy",
+    "name":"spr_box_pressure_plate",
+    "path":"sprites/spr_box_pressure_plate/spr_box_pressure_plate.yy",
   },
   "spriteMaskId":null,
   "visible":true,

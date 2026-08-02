@@ -1,8 +1,10 @@
 pressionada = false;
 
+porta = obj_door;
+
 abrir_porta = function ()
 {
-    with (obj_door) {
+    with (porta) {
         aberta = true;
         image_index = 1;
     }
@@ -10,7 +12,7 @@ abrir_porta = function ()
 
 fechar_porta = function ()
 {
-    with (obj_door) {
+    with (porta) {
         aberta = false;
         image_index = 0;
     }
