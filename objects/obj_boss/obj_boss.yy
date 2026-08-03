@@ -31,7 +31,10 @@
   "resourceType":"GMObject",
   "resourceVersion":"2.0",
   "solid":false,
-  "spriteId":null,
+  "spriteId":{
+    "name":"spr_colisor",
+    "path":"sprites/spr_colisor/spr_colisor.yy",
+  },
   "spriteMaskId":null,
   "visible":true,
 }

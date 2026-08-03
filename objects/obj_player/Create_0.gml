@@ -199,18 +199,25 @@ registrar_historico_temporal = function()
 // INICIAR RETROCESSO
 //==================================================
 
+//==================================================
+// INICIAR RETROCESSO FORÇADO
+//==================================================
+
 iniciar_retrocesso_forcado = function(_frames)
 {
+    // Já está sofrendo o efeito.
     if (retrocedendo_forcado)
     {
         return false;
     }
 
+    // Período de proteção após outro impacto.
     if (invulneravel_frames > 0)
     {
         return false;
     }
 
+    // Precisa existir mais de uma posição registrada.
     if (historico_total <= 1)
     {
         return false;
@@ -218,13 +225,14 @@ iniciar_retrocesso_forcado = function(_frames)
 
     retrocedendo_forcado = true;
 
+    // Não utiliza mais posições do que realmente existem.
     retrocesso_restante = min(
         _frames,
-        historico_total
+        historico_total - 1
     );
 
-    // historico_indice aponta para o próximo espaço.
-    // Portanto, o último registro é o índice anterior.
+    // historico_indice sempre aponta para o próximo
+    // espaço vazio do histórico circular.
     retrocesso_cursor =
         (
             historico_indice
@@ -241,14 +249,19 @@ iniciar_retrocesso_forcado = function(_frames)
     velh = 0;
     velv = 0;
 
+    estado = PlayerEstados.parado;
+
     image_blend = c_aqua;
 
     return true;
 };
 
-
 //==================================================
 // ATUALIZAR RETROCESSO
+//==================================================
+
+//==================================================
+// ATUALIZAR RETROCESSO FORÇADO
 //==================================================
 
 atualizar_retrocesso_forcado = function()
@@ -258,11 +271,19 @@ atualizar_retrocesso_forcado = function()
         return false;
     }
 
+    // Bloquear todo movimento normal.
     input_h = 0;
     input_v = 0;
 
     velh = 0;
     velv = 0;
+
+    estado = PlayerEstados.parado;
+
+
+    //==================================================
+    // PERCORRER O HISTÓRICO AO CONTRÁRIO
+    //==================================================
 
     repeat (retrocesso_velocidade)
     {
@@ -277,11 +298,11 @@ atualizar_retrocesso_forcado = function()
         var _novo_y =
             historico_y[retrocesso_cursor];
 
-        // Uma caixa ou porta pode ter mudado de lugar
-        // depois que aquela posição foi registrada.
-        //
-        // Nesse caso, o retrocesso para antes de
-        // atravessar o obstáculo atual.
+
+        //==================================================
+        // NÃO ATRAVESSAR OBJETOS QUE ESTÃO NO PRESENTE
+        //==================================================
+
         if (
             place_meeting(
                 _novo_x,
@@ -293,6 +314,11 @@ atualizar_retrocesso_forcado = function()
             retrocesso_restante = 0;
             break;
         }
+
+
+        //==================================================
+        // APLICAR POSIÇÃO ANTIGA
+        //==================================================
 
         x = _novo_x;
         y = _novo_y;
@@ -307,6 +333,8 @@ atualizar_retrocesso_forcado = function()
                 retrocesso_cursor
             ];
 
+
+        // Ir para o registro anterior.
         retrocesso_cursor =
             (
                 retrocesso_cursor
@@ -359,16 +387,21 @@ atualizar_retrocesso_forcado = function()
 
         image_blend = c_white;
 
-        // Meio segundo sem poder levar outro impacto.
+        input_h = 0;
+        input_v = 0;
+
+        velh = 0;
+        velv = 0;
+
+        // Meio segundo de proteção.
         invulneravel_frames = 30;
 
-        // A nova linha temporal começa aqui.
+        // Começa um histórico novo nesta posição.
         limpar_historico_temporal();
     }
 
     return true;
 };
-
 
 //==================================================
 // ESTADO INICIAL

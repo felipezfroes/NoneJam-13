@@ -23,6 +23,11 @@ if (invulneravel_frames > 0)
 // RETROCESSO FORÇADO
 //==================================================
 
+// Enquanto está retrocedendo, não executa:
+// - controles;
+// - gravação do eco;
+// - interação com caixa;
+// - movimento normal.
 if (atualizar_retrocesso_forcado())
 {
     exit;
@@ -60,7 +65,7 @@ if (!instance_exists(time_manager))
 
 if (instance_exists(time_manager))
 {
-    // Congela o player depois da conclusão.
+    // Congela depois da conclusão da fase.
     if ((time_manager).vitoria)
     {
         input_h = 0;
