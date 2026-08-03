@@ -77,8 +77,8 @@
   "resourceType":"GMProject",
   "resourceVersion":"2.0",
   "RoomOrderNodes":[
-    {"roomId":{"name":"rm_tuto_temporal","path":"rooms/rm_tuto_temporal/rm_tuto_temporal.yy",},},
     {"roomId":{"name":"rm_boss","path":"rooms/rm_boss/rm_boss.yy",},},
+    {"roomId":{"name":"rm_tuto_temporal","path":"rooms/rm_tuto_temporal/rm_tuto_temporal.yy",},},
     {"roomId":{"name":"rm_tuto_caixa","path":"rooms/rm_tuto_caixa/rm_tuto_caixa.yy",},},
     {"roomId":{"name":"rm_3","path":"rooms/rm_3/rm_3.yy",},},
   ],

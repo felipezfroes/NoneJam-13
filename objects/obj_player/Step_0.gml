@@ -1,23 +1,5 @@
-maquina_estados();
-
-
 //==================================================
-// LOCALIZAR TIME MANAGER
-//==================================================
-
-if (!instance_exists(time_manager))
-{
-    time_manager = instance_find(obj_time_manager, 0);
-
-    if (instance_exists(time_manager))
-    {
-        (time_manager).registrar_player(id);
-    }
-}
-
-
-//==================================================
-// REINICIAR TESTE
+// REINICIAR SALA
 //==================================================
 
 if (keyboard_check_pressed(ord("R")))
@@ -28,27 +10,56 @@ if (keyboard_check_pressed(ord("R")))
 
 
 //==================================================
+// INVULNERABILIDADE
+//==================================================
+
+if (invulneravel_frames > 0)
+{
+    invulneravel_frames--;
+}
+
+
+//==================================================
+// RETROCESSO FORÇADO
+//==================================================
+
+if (atualizar_retrocesso_forcado())
+{
+    exit;
+}
+
+
+//==================================================
+// MOVIMENTO E ESTADOS
+//==================================================
+
+maquina_estados();
+
+
+//==================================================
+// LOCALIZAR TIME MANAGER
+//==================================================
+
+if (!instance_exists(time_manager))
+{
+    time_manager = instance_find(
+        obj_time_manager,
+        0
+    );
+
+    if (instance_exists(time_manager))
+    {
+        (time_manager).registrar_player(id);
+    }
+}
+
+
+//==================================================
 // SISTEMA TEMPORAL
 //==================================================
 
 if (instance_exists(time_manager))
 {
-    if ((time_manager).permite_eco)
-    {
-        (time_manager).gravar_comando(
-            input_h,
-            input_v
-        );
-    
-        if (
-            !(time_manager).eco_criado
-            && keyboard_check_pressed(vk_space)
-        )
-        {
-            (time_manager).criar_eco_teste();
-        }
-    }
-    
     // Congela o player depois da conclusão.
     if ((time_manager).vitoria)
     {
@@ -60,7 +71,24 @@ if (instance_exists(time_manager))
 
         exit;
     }
+
+    if ((time_manager).permite_eco)
+    {
+        (time_manager).gravar_comando(
+            input_h,
+            input_v
+        );
+
+        if (
+            !(time_manager).eco_criado
+            && keyboard_check_pressed(vk_space)
+        )
+        {
+            (time_manager).criar_eco_teste();
+        }
+    }
 }
+
 
 //==================================================
 // EMPURRAR CAIXA

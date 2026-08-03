@@ -1,4 +1,4 @@
 canal = 2;
 
-acao = DoorAction.concluir_jogo;
-sala_destino = noone;
+acao = DoorAction.trocar_sala;
+sala_destino = rm_boss;

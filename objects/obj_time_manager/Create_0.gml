@@ -139,6 +139,8 @@ criar_eco_teste = function()
 
     (playerid).input_h = 0;
     (playerid).input_v = 0;
+    
+    (playerid).limpar_historico_temporal();
 
     eco_criado = true;
     gravando = false;
