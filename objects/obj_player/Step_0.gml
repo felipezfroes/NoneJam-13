@@ -33,6 +33,22 @@ if (keyboard_check_pressed(ord("R")))
 
 if (instance_exists(time_manager))
 {
+    if ((time_manager).permite_eco)
+    {
+        (time_manager).gravar_comando(
+            input_h,
+            input_v
+        );
+    
+        if (
+            !(time_manager).eco_criado
+            && keyboard_check_pressed(vk_space)
+        )
+        {
+            (time_manager).criar_eco_teste();
+        }
+    }
+    
     // Congela o player depois da conclusão.
     if ((time_manager).vitoria)
     {
@@ -43,21 +59,6 @@ if (instance_exists(time_manager))
         velv = 0;
 
         exit;
-    }
-
-    // Grava os comandos enquanto ainda não existe eco.
-    (time_manager).gravar_comando(
-        input_h,
-        input_v
-    );
-
-    // Encerra a gravação e cria o eco.
-    if (
-        !(time_manager).eco_criado
-        && keyboard_check_pressed(vk_space)
-    )
-    {
-        (time_manager).criar_eco_teste();
     }
 }
 

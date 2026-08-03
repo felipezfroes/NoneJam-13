@@ -15,6 +15,12 @@ eco_id = noone;
 
 vitoria = false;
 
+permite_eco = true;
+mostrar_barra_temporal = true;
+
+texto_objetivo = "OBJETIVO: alcance a saída";
+texto_conclusao = "FASE CONCLUÍDA!";
+
 
 //==================================================
 // REGISTRAR PLAYER

@@ -11,6 +11,7 @@
   "defaultScriptType":1,
   "Folders":[
     {"$GMFolder":"","%Name":"Objects","folderPath":"folders/Objects.yy","name":"Objects","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"Boss","folderPath":"folders/Objects/Boss.yy","name":"Boss","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Collision","folderPath":"folders/Objects/Collision.yy","name":"Collision","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Level","folderPath":"folders/Objects/Level.yy","name":"Level","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Door","folderPath":"folders/Objects/Level/Door.yy","name":"Door","resourceType":"GMFolder","resourceVersion":"2.0",},
@@ -39,6 +40,8 @@
   },
   "name":"NoneJam 13",
   "resources":[
+    {"id":{"name":"obj_boss_projectile","path":"objects/obj_boss_projectile/obj_boss_projectile.yy",},},
+    {"id":{"name":"obj_boss","path":"objects/obj_boss/obj_boss.yy",},},
     {"id":{"name":"obj_box_door","path":"objects/obj_box_door/obj_box_door.yy",},},
     {"id":{"name":"obj_box_pressure_plate","path":"objects/obj_box_pressure_plate/obj_box_pressure_plate.yy",},},
     {"id":{"name":"obj_box","path":"objects/obj_box/obj_box.yy",},},
@@ -53,13 +56,14 @@
     {"id":{"name":"par_door","path":"objects/par_door/par_door.yy",},},
     {"id":{"name":"par_pressure_plate","path":"objects/par_pressure_plate/par_pressure_plate.yy",},},
     {"id":{"name":"rm_3","path":"rooms/rm_3/rm_3.yy",},},
-    {"id":{"name":"rm_4","path":"rooms/rm_4/rm_4.yy",},},
+    {"id":{"name":"rm_boss","path":"rooms/rm_boss/rm_boss.yy",},},
     {"id":{"name":"rm_tuto_caixa","path":"rooms/rm_tuto_caixa/rm_tuto_caixa.yy",},},
     {"id":{"name":"rm_tuto_temporal","path":"rooms/rm_tuto_temporal/rm_tuto_temporal.yy",},},
     {"id":{"name":"scr_actor_apply_input","path":"scripts/scr_actor_apply_input/scr_actor_apply_input.yy",},},
     {"id":{"name":"scr_atualizar_profundidade","path":"scripts/scr_atualizar_profundidade/scr_atualizar_profundidade.yy",},},
     {"id":{"name":"scr_door_enums","path":"scripts/scr_door_enums/scr_door_enums.yy",},},
     {"id":{"name":"spr_background","path":"sprites/spr_background/spr_background.yy",},},
+    {"id":{"name":"spr_boss_projectile","path":"sprites/spr_boss_projectile/spr_boss_projectile.yy",},},
     {"id":{"name":"spr_box_pressure_plate","path":"sprites/spr_box_pressure_plate/spr_box_pressure_plate.yy",},},
     {"id":{"name":"spr_box","path":"sprites/spr_box/spr_box.yy",},},
     {"id":{"name":"spr_colisor","path":"sprites/spr_colisor/spr_colisor.yy",},},
@@ -74,9 +78,9 @@
   "resourceVersion":"2.0",
   "RoomOrderNodes":[
     {"roomId":{"name":"rm_tuto_temporal","path":"rooms/rm_tuto_temporal/rm_tuto_temporal.yy",},},
+    {"roomId":{"name":"rm_boss","path":"rooms/rm_boss/rm_boss.yy",},},
     {"roomId":{"name":"rm_tuto_caixa","path":"rooms/rm_tuto_caixa/rm_tuto_caixa.yy",},},
     {"roomId":{"name":"rm_3","path":"rooms/rm_3/rm_3.yy",},},
-    {"roomId":{"name":"rm_4","path":"rooms/rm_4/rm_4.yy",},},
   ],
   "templateType":"game",
   "TextureGroups":[
