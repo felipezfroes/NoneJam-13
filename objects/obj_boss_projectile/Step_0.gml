@@ -10,15 +10,12 @@ if (tempo_vida <= 0)
     exit;
 }
 
+
 if (cooldown_reflexao > 0)
 {
     cooldown_reflexao--;
 }
 
-if (reacao_grace > 0)
-{
-    reacao_grace--;
-}
 
 if (ignorar_player_frames > 0)
 {
@@ -26,17 +23,26 @@ if (ignorar_player_frames > 0)
 }
 
 
+if (reacao_grace > 0)
+{
+    reacao_grace--;
+}
+
+
 //==================================================
-// PULSO VISUAL
+// PULSO SOMENTE VISUAL
 //==================================================
+
+// A escala real da instância permanece 1.
+// O Draw aplica esta escala sem alterar a colisão.
 
 escala_visual =
     1
-    + sin(current_time * 0.025)
-    * 0.08;
-
-image_xscale = escala_visual;
-image_yscale = escala_visual;
+    + sin(
+        current_time * 0.025
+        
+    )
+    * 0.06;
 
 
 //==================================================
@@ -54,26 +60,46 @@ var _y_anterior = y;
 x += vel_x;
 y += vel_y;
 
+
 //==================================================
-// REAÇÃO GARANTIDA NO PONTO DE ENCONTRO
+// REAÇÃO GARANTIDA
 //==================================================
 
 if (
     pode_multiplicar
+    && !refletido
     && geracao == 0
     && reacao_grupo >= 0
+    && reacao_grace <= 0
     && !reacao_disparada
 )
 {
-    var _distancia_alvo =
-        point_distance(
-            x,
-            y,
-            reacao_alvo_x,
-            reacao_alvo_y
-        );
+    var _antes_x =
+        reacao_alvo_x
+        - _x_anterior;
 
-    var _velocidade_atual =
+    var _antes_y =
+        reacao_alvo_y
+        - _y_anterior;
+
+    var _depois_x =
+        reacao_alvo_x
+        - x;
+
+    var _depois_y =
+        reacao_alvo_y
+        - y;
+
+
+    // Produto escalar menor ou igual a zero:
+    // o projétil alcançou ou atravessou o ponto.
+    var _passou_do_alvo =
+        (_antes_x * _depois_x)
+        + (_antes_y * _depois_y)
+        <= 0;
+
+
+    var _velocidade =
         point_distance(
             0,
             0,
@@ -81,50 +107,184 @@ if (
             vel_y
         );
 
+    var _proximo_do_alvo =
+        point_distance(
+            x,
+            y,
+            reacao_alvo_x,
+            reacao_alvo_y
+        )
+        <= _velocidade + 0.5;
+
+
     if (
-        _distancia_alvo
-        <= _velocidade_atual + 2
+        _passou_do_alvo
+        || _proximo_do_alvo
     )
     {
         x = reacao_alvo_x;
         y = reacao_alvo_y;
 
-        executar_reacao_em_cadeia(
-            reacao_alvo_x,
-            reacao_alvo_y,
-            reacao_grupo
-        );
-
-        exit;
+        if (
+            executar_reacao_em_cadeia(
+                reacao_alvo_x,
+                reacao_alvo_y,
+                reacao_grupo
+            )
+        )
+        {
+            exit;
+        }
     }
 }
 
+
 //==================================================
-// SPAWN DE RASTRO COM SPRITE
+// RASTRO
 //==================================================
 
 trail_timer++;
 
-if (trail_timer >= trail_intervalo)
+if (
+    trail_timer >= trail_intervalo
+    && trail_sprite != noone
+)
 {
     trail_timer = 0;
 
-    if (trail_sprite != noone)
-    {
-        var _trail = instance_create_depth(
-            x,
-            y,
-            depth + 1,
-            obj_projectile_trail_vfx
-        );
-
-        (_trail).sprite_index = trail_sprite;
-        (_trail).image_blend = image_blend;
-        (_trail).image_alpha = trail_alpha;
-        (_trail).image_xscale = trail_scale;
-        (_trail).image_yscale = trail_scale;
-    }
+    criar_vfx_simples(
+        trail_sprite,
+        x,
+        y,
+        trail_alpha,
+        trail_scale,
+        image_blend
+    );
 }
+
+
+//==================================================
+// COLISÃO COM A CAIXA
+//==================================================
+
+// A caixa é verificada antes do player para que
+// funcione corretamente como escudo e refletor.
+
+var _caixa = collision_line(
+    _x_anterior,
+    _y_anterior,
+    x,
+    y,
+    obj_box,
+    false,
+    true
+);
+
+if (_caixa == noone)
+{
+    _caixa = instance_place(
+        x,
+        y,
+        obj_box
+    );
+}
+
+
+if (
+    _caixa != noone
+    && cooldown_reflexao <= 0
+)
+{
+    //==================================================
+    // VFX DA REFLEXÃO
+    //==================================================
+
+    repeat (3)
+    {
+        criar_vfx_simples(
+            sprite_index,
+
+            x + irandom_range(-3, 3),
+            y + irandom_range(-3, 3),
+
+            random_range(0.25, 0.45),
+            random_range(0.5, 0.85),
+            c_aqua
+        );
+    }
+
+
+    //==================================================
+    // INVERTER MOVIMENTO
+    //==================================================
+
+    vel_x = -vel_x;
+    vel_y = -vel_y;
+
+    refletido = true;
+
+    pode_multiplicar = false;
+
+    reacao_grupo = -1;
+    reacao_disparada = true;
+
+    cooldown_reflexao = 8;
+    ignorar_player_frames = 6;
+
+    // Garante tempo suficiente para chegar ao boss.
+    tempo_vida = max(
+        tempo_vida,
+        120
+    );
+
+    aplicar_visual();
+
+
+    //==================================================
+    // FEEDBACK NA CAIXA
+    //==================================================
+
+    if (
+        variable_instance_exists(
+            _caixa,
+            "flash_timer"
+        )
+    )
+    {
+        (_caixa).flash_timer = 8;
+    }
+
+    if (
+        variable_instance_exists(
+            _caixa,
+            "shake_timer"
+        )
+    )
+    {
+        (_caixa).shake_timer = 5;
+        (_caixa).shake_forca = 1;
+    }
+
+    if (
+        variable_instance_exists(
+            _caixa,
+            "escala_visual_x"
+        )
+    )
+    {
+        (_caixa).escala_visual_x = 1.12;
+        (_caixa).escala_visual_y = 0.88;
+    }
+
+
+    // Volta um passo na direção refletida para
+    // impedir que permaneça dentro da caixa.
+    x = _x_anterior + vel_x;
+    y = _y_anterior + vel_y;
+
+    exit;
+}
+
 
 //==================================================
 // COLISÃO COM PLAYER
@@ -153,175 +313,46 @@ if (ignorar_player_frames <= 0)
 
     if (_player != noone)
     {
-        if (refletido)
-        {
-            instance_destroy();
-            exit;
-        }
+        processar_impacto_player(
+            _player
+        );
 
-        var _iniciou =
-            (_player).
-                iniciar_retrocesso_forcado(
-                    (_player).
-                        retrocesso_frames_impacto
-                );
-
-        if (_iniciou)
-        {
-            var _boss = instance_find(
-                obj_boss,
-                0
-            );
-
-            if (instance_exists(_boss))
-            {
-                if (
-                    (_boss).estado
-                        != BossState.atingido
-                    && (_boss).estado
-                        != BossState.movendo
-                    && (_boss).estado
-                        != BossState.derrotado
-                )
-                {
-                    (_boss).estado =
-                        BossState.esperando;
-
-                    (_boss).timer = 60;
-                }
-            }
-
-            with (obj_boss_projectile)
-            {
-                instance_destroy();
-            }
-
-            with (obj_boss_orb)
-            {
-                instance_destroy();
-            }
-
-            exit;
-        }
-
-        instance_destroy();
         exit;
     }
 }
 
+
 //==================================================
-// COLISÃO COM CAIXA
+// COLISÃO COM PAREDES E PORTAS
 //==================================================
 
-var _caixa = instance_place(
+// obj_box também herda de obj_colisor,
+// mas já foi processada e teria causado exit.
+
+var _obstaculo = collision_line(
+    _x_anterior,
+    _y_anterior,
     x,
     y,
-    obj_box
+    obj_colisor,
+    false,
+    true
 );
 
-if (
-    _caixa != noone
-    && cooldown_reflexao <= 0
-)
+if (_obstaculo == noone)
 {
-    var _reflexao_vfx = instance_create_depth(
-    x,
-    y,
-    depth + 2,
-    obj_animated_vfx
-    );
-    
-    (_reflexao_vfx).sprite_index =
-        spr_boss_proj_main  ;
-    
-    (_reflexao_vfx).image_speed = 0.35;
-    (_reflexao_vfx).image_blend = c_aqua;
-    
-    (_reflexao_vfx).escala_inicial = 0.7;
-    (_reflexao_vfx).escala_final = 1.2;
-    
-    (_reflexao_vfx).fade_inicio_frame = 0.5;
-    
-    // Rebate na direção contrária.
-    vel_x = -vel_x;
-    vel_y = -vel_y;
-
-    refletido = true;
-
-    pode_multiplicar = false;
-    
-    aplicar_visual();
-
-    cooldown_reflexao = 8;
-    ignorar_player_frames = 5;
-
-    image_blend = c_aqua;
-
-    // Retira o tiro de dentro da caixa.
-    x += vel_x;
-    y += vel_y;
-
-    exit;
-}
-
-
-//==================================================
-// ESCUDO / PORTA
-//==================================================
-
-if (
-    place_meeting(
+    _obstaculo = instance_place(
         x,
         y,
-        obj_door_blocker
-    )
-)
+        obj_colisor
+    );
+}
+
+
+if (_obstaculo != noone)
 {
     instance_destroy();
     exit;
-}
-
-
-//==================================================
-// OUTROS COLISORES
-//==================================================
-
-// A caixa precisa ser verificada primeiro porque
-// herda de obj_colisor.
-var _colisor = instance_place(
-    x,
-    y,
-    obj_colisor
-);
-
-if (_colisor != noone)
-{
-    instance_destroy();
-    exit;
-}
-
-if (reacao_disparada)
-{
-    exit;
-}
-
-reacao_disparada = true;
-
-var _par = noone;
-
-with (obj_boss_projectile)
-{
-    if (
-        id != other.id
-        && pode_multiplicar
-        && geracao == 0
-        && reacao_grupo
-            == other.reacao_grupo
-        && !reacao_disparada
-    )
-    {
-        _par = id;
-    }
 }
 
 
@@ -337,4 +368,5 @@ if (
 )
 {
     instance_destroy();
+    exit;
 }

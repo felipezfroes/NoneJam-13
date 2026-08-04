@@ -1,1 +1,11 @@
-draw_self();
+draw_sprite_ext(
+    sprite_index,
+    image_index,
+    x,
+    y,
+    escala_visual,
+    escala_visual,
+    image_angle,
+    image_blend,
+    image_alpha
+);

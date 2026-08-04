@@ -1,44 +1,5 @@
 //==================================================
-// MOVIMENTO
-//==================================================
-
-vel_x = 0;
-vel_y = 4;
-
-
-//==================================================
-// TIPO E ESTADO
-//==================================================
-
-refletido = false;
-
-pode_danificar_boss = false;
-
-pode_multiplicar = false;
-geracao = 0;
-
-reacao_grace = 10;
-reacao_processada = false;
-
-ignorar_player_frames = 4;
-
-
-//==================================================
-// TEMPO DE VIDA
-//==================================================
-
-tempo_vida = 240;
-
-
-//==================================================
-// REFLEXÃO
-//==================================================
-
-cooldown_reflexao = 0;
-
-
-//==================================================
-// ENUM DOS TIPOS VISUAIS
+// TIPOS DE PROJÉTIL
 //==================================================
 
 enum ProjectileType
@@ -48,23 +9,31 @@ enum ProjectileType
     chain
 }
 
-tipo_tiro = ProjectileType.normal;
+
+//==================================================
+// MOVIMENTO
+//==================================================
+
+vel_x = 0;
+vel_y = 4;
 
 
 //==================================================
-// VISUAL
+// COMPORTAMENTO
 //==================================================
 
-image_speed = 0.25;
-image_blend = c_white;
+refletido = false;
 
-escala_visual = 1;
+pode_danificar_boss = false;
+pode_multiplicar = false;
 
-trail_sprite = noone;
-trail_alpha = 0.45;
-trail_scale = 1;
-trail_intervalo = 2;
-trail_timer = 0;
+geracao = 0;
+
+ignorar_player_frames = 4;
+cooldown_reflexao = 0;
+
+tempo_vida = 240;
+
 
 //==================================================
 // REAÇÃO EM CADEIA
@@ -75,69 +44,188 @@ reacao_grupo = -1;
 reacao_alvo_x = x;
 reacao_alvo_y = y;
 
+reacao_grace = 2;
 reacao_disparada = false;
 
 
 //==================================================
-// APLICAR VISUAL
+// VISUAL
+//==================================================
+
+tipo_tiro = ProjectileType.normal;
+
+image_speed = 0.25;
+image_blend = c_white;
+image_alpha = 1;
+
+// Mantém a colisão igual para todos os tiros.
+// O tiro principal pode parecer maior sem ficar
+// injustamente maior em colisão.
+mask_index = spr_boss_proj_normal;
+
+escala_visual = 1;
+
+
+//==================================================
+// RASTRO
+//==================================================
+
+trail_sprite = spr_boss_proj_normal;
+
+trail_alpha = 0.12;
+trail_scale = 0.42;
+
+trail_intervalo = 4;
+trail_timer = 0;
+
+
+//==================================================
+// APLICAR VISUAL DO TIPO
 //==================================================
 
 aplicar_visual = function()
 {
-    if (refletido)
-    {
-        sprite_index = spr_boss_proj_main;
-        trail_sprite = spr_boss_aviso_principal;
-
-        image_blend = c_aqua;
-
-        trail_alpha = 0.55;
-        trail_scale = 1.0;
-
-        return;
-    }
-
     switch (tipo_tiro)
     {
         case ProjectileType.principal:
         {
-            sprite_index = spr_boss_proj_main;
-            trail_sprite = spr_boss_aviso_principal;
+            sprite_index =
+                spr_boss_proj_main;
 
-            image_blend = c_white;
+            trail_alpha = 0.24;
+            trail_scale = 0.58;
+            trail_intervalo = 2;
 
-            trail_alpha = 0.50;
-            trail_scale = 1.0;
             break;
         }
+
 
         case ProjectileType.chain:
         {
-            sprite_index = spr_boss_proj_chain;
-            trail_sprite = spr_boss_aviso_principal;
+            sprite_index =
+                spr_boss_proj_chain;
 
-            image_blend = c_white;
+            trail_alpha = 0.20;
+            trail_scale = 0.50;
+            trail_intervalo = 3;
 
-            trail_alpha = 0.42;
-            trail_scale = 0.95;
             break;
         }
+
 
         default:
         {
-            sprite_index = spr_boss_proj_normal;
-            trail_sprite = spr_boss_aviso_principal;
+            sprite_index =
+                spr_boss_proj_normal;
 
-            image_blend = c_white;
+            trail_alpha = 0.12;
+            trail_scale = 0.42;
+            trail_intervalo = 4;
 
-            trail_alpha = 0.35;
-            trail_scale = 0.85;
             break;
         }
     }
+
+
+    // O rastro utiliza o próprio formato do tiro.
+    trail_sprite = sprite_index;
+
+
+    if (refletido)
+    {
+        image_blend = c_aqua;
+
+        trail_alpha = max(
+            trail_alpha,
+            0.32
+        );
+
+        trail_scale += 0.08;
+        trail_intervalo = 1;
+    }
+    else
+    {
+        image_blend = c_white;
+    }
 };
 
-reacao_disparada = false;
+
+//==================================================
+// CRIAR VFX SIMPLES
+//==================================================
+
+criar_vfx_simples = function(
+    _sprite,
+    _x,
+    _y,
+    _alpha,
+    _escala,
+    _cor
+)
+{
+    var _vfx = instance_create_depth(
+        _x,
+        _y,
+        depth + 1,
+        obj_projectile_trail_vfx
+    );
+
+    (_vfx).sprite_index = _sprite;
+    (_vfx).image_index = 0;
+    (_vfx).image_speed = 0;
+
+    (_vfx).image_alpha = _alpha;
+    (_vfx).image_blend = _cor;
+
+    (_vfx).image_xscale = _escala;
+    (_vfx).image_yscale = _escala;
+
+    return _vfx;
+};
+
+
+//==================================================
+// VFX DA REAÇÃO
+//==================================================
+
+criar_vfx_reacao = function(
+    _reacao_x,
+    _reacao_y
+)
+{
+    repeat (6)
+    {
+        var _direcao = irandom(359);
+
+        var _distancia =
+            random_range(1, 5);
+
+        criar_vfx_simples(
+            spr_boss_proj_chain,
+
+            _reacao_x
+                + lengthdir_x(
+                    _distancia,
+                    _direcao
+                ),
+
+            _reacao_y
+                + lengthdir_y(
+                    _distancia,
+                    _direcao
+                ),
+
+            random_range(0.25, 0.5),
+            random_range(0.45, 0.8),
+            c_aqua
+        );
+    }
+};
+
+
+//==================================================
+// EXECUTAR REAÇÃO EM CADEIA
+//==================================================
 
 executar_reacao_em_cadeia = function(
     _reacao_x,
@@ -147,145 +235,315 @@ executar_reacao_em_cadeia = function(
 {
     if (reacao_disparada)
     {
-        return;
+        return false;
     }
+
+
+    //==================================================
+    // CONFIRMAR QUE O PAR AINDA EXISTE
+    //==================================================
+
+    var _par_existe = false;
+
+    var _quantidade =
+        instance_number(
+            obj_boss_projectile
+        );
+
+    for (
+        var _i = 0;
+        _i < _quantidade;
+        _i++
+    )
+    {
+        var _outro =
+            instance_find(
+                obj_boss_projectile,
+                _i
+            );
+
+        if (
+            instance_exists(_outro)
+            && _outro != id
+            && (_outro).pode_multiplicar
+            && !(_outro).refletido
+            && (_outro).geracao == 0
+            && (_outro).reacao_grupo == _grupo
+        )
+        {
+            _par_existe = true;
+            break;
+        }
+    }
+
+
+    // Se o outro tiro foi destruído ou refletido,
+    // este continua normalmente sem multiplicar.
+    if (!_par_existe)
+    {
+        pode_multiplicar = false;
+        reacao_grupo = -1;
+
+        return false;
+    }
+
 
     reacao_disparada = true;
 
 
     //==================================================
-    // MARCAR E DESTRUIR O PAR
+    // REMOVER O PAR
     //==================================================
+
+    var _origem_id = id;
 
     with (obj_boss_projectile)
     {
         if (
-            pode_multiplicar
+            id != _origem_id
+            && pode_multiplicar
+            && !refletido
             && geracao == 0
             && reacao_grupo == _grupo
         )
         {
             reacao_disparada = true;
+            instance_destroy();
         }
     }
 
 
     //==================================================
-    // VFX
+    // EFEITO VISUAL
     //==================================================
 
-    var _efeito = instance_create_depth(
+    criar_vfx_reacao(
         _reacao_x,
-        _reacao_y,
-        depth + 2,
-        obj_animated_vfx
+        _reacao_y
     );
 
-    (_efeito).sprite_index =
-        spr_boss_aviso_principal;
 
-    (_efeito).image_speed = 0.28;
-    (_efeito).image_blend = c_aqua;
+    //==================================================
+    // CONFIGURAÇÃO DOS FILHOS
+    //==================================================
 
-    (_efeito).escala_inicial = 0.7;
-    (_efeito).escala_final = 1.25;
+    var _boss =
+        instance_find(
+            obj_boss,
+            0
+        );
 
-    (_efeito).fade_inicio_frame = 0.55;
+    var _velocidade_filhos = 1.85;
+    var _limite_projeteis = 10;
+
+    if (instance_exists(_boss))
+    {
+        _limite_projeteis =
+            (_boss).maximo_projeteis;
+
+        if ((_boss).fase >= 3)
+        {
+            _velocidade_filhos = 2.1;
+        }
+    }
+
+
+    // O projétil atual será removido no final.
+    var _projeteis_atuais =
+        instance_number(
+            obj_boss_projectile
+        );
+
+    var _espacos_disponiveis = max(
+        0,
+        _limite_projeteis
+        - (_projeteis_atuais - 1)
+    );
+
+    var _quantidade_filhos = min(
+        3,
+        _espacos_disponiveis
+    );
+
+    var _direcoes =
+    [
+        225,
+        270,
+        315
+    ];
 
 
     //==================================================
     // CRIAR FILHOS
     //==================================================
 
-    var _boss = instance_find(
-        obj_boss,
-        0
-    );
+    for (
+        var _i = 0;
+        _i < _quantidade_filhos;
+        _i++
+    )
+    {
+        var _direcao =
+            _direcoes[_i];
+
+        var _filho =
+            instance_create_depth(
+                _reacao_x,
+                _reacao_y,
+                depth,
+                obj_boss_projectile
+            );
+
+        (_filho).vel_x =
+            lengthdir_x(
+                _velocidade_filhos,
+                _direcao
+            );
+
+        (_filho).vel_y =
+            lengthdir_y(
+                _velocidade_filhos,
+                _direcao
+            );
+
+        (_filho).geracao = 1;
+
+        (_filho).pode_multiplicar =
+            false;
+
+        (_filho).pode_danificar_boss =
+            false;
+
+        (_filho).reacao_grupo = -1;
+        (_filho).reacao_disparada = true;
+
+        (_filho).ignorar_player_frames = 2;
+        (_filho).tempo_vida = 120;
+
+        (_filho).tipo_tiro =
+            ProjectileType.chain;
+
+        (_filho).aplicar_visual();
+
+        (_filho).image_blend =
+            c_aqua;
+    }
+
+
+    instance_destroy();
+
+    return true;
+};
+
+
+//==================================================
+// PROCESSAR IMPACTO NO PLAYER
+//==================================================
+
+processar_impacto_player = function(
+    _player
+)
+{
+    if (!instance_exists(_player))
+    {
+        return false;
+    }
+
+
+    // Tiro refletido não pune o player.
+    if (refletido)
+    {
+        instance_destroy();
+        return true;
+    }
+
+
+    // Não atinge novamente durante retrocesso
+    // ou invulnerabilidade.
+    if (
+        (_player).retrocedendo_forcado
+        || (_player).invulneravel_frames > 0
+    )
+    {
+        instance_destroy();
+        return true;
+    }
+
+
+    var _iniciou =
+        (_player).
+            iniciar_retrocesso_forcado(
+                (_player).
+                    retrocesso_frames_impacto
+            );
+
+
+    if (!_iniciou)
+    {
+        instance_destroy();
+        return true;
+    }
+
+
+    //==================================================
+    // PAUSAR O BOSS
+    //==================================================
+
+    var _boss =
+        instance_find(
+            obj_boss,
+            0
+        );
 
     if (instance_exists(_boss))
     {
-        var _vel =
-            ((_boss).fase >= 3)
-            ? 2.15
-            : 1.85;
-
-        var _direcoes =
-        [
-            225,
-            270,
-            315
-        ];
-
-        for (
-            var _i = 0;
-            _i < array_length(_direcoes);
-            _i++
+        if (
+            (_boss).estado
+                != BossState.atingido
+            && (_boss).estado
+                != BossState.movendo
+            && (_boss).estado
+                != BossState.derrotado
         )
         {
-            if (
-                instance_number(
-                    obj_boss_projectile
-                )
-                >= (_boss).maximo_projeteis
+            (_boss).estado =
+                BossState.esperando;
+
+            (_boss).timer = 60;
+        }
+
+        if (
+            variable_instance_exists(
+                _boss,
+                "onda_diagonal_ativa"
             )
-            {
-                break;
-            }
-
-            var _dir =
-                _direcoes[_i];
-
-            var _filho =
-                instance_create_depth(
-                    _reacao_x,
-                    _reacao_y,
-                    depth,
-                    obj_boss_projectile
-                );
-
-            (_filho).vel_x =
-                lengthdir_x(
-                    _vel,
-                    _dir
-                );
-
-            (_filho).vel_y =
-                lengthdir_y(
-                    _vel,
-                    _dir
-                );
-
-            (_filho).geracao = 1;
-
-            (_filho).pode_multiplicar =
+        )
+        {
+            (_boss).onda_diagonal_ativa =
                 false;
-
-            (_filho).pode_danificar_boss =
-                false;
-
-            (_filho).reacao_grace = 12;
-
-            (_filho).tipo_tiro =
-                ProjectileType.chain;
-
-            (_filho).aplicar_visual();
         }
     }
 
 
     //==================================================
-    // REMOVER PROJÉTEIS DO GRUPO
+    // LIMPAR A ARENA
     //==================================================
+
+    with (obj_boss_orb)
+    {
+        instance_destroy();
+    }
 
     with (obj_boss_projectile)
     {
-        if (
-            pode_multiplicar
-            && geracao == 0
-            && reacao_grupo == _grupo
-        )
-        {
-            instance_destroy();
-        }
+        instance_destroy();
     }
+
+
+    return true;
 };
+
+
+// Aplica uma aparência válida mesmo quando algum
+// projétil for criado sem configuração externa.
+aplicar_visual();
