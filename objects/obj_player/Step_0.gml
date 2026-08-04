@@ -58,6 +58,27 @@ if (!instance_exists(time_manager))
     }
 }
 
+var _manager =
+    instance_find(
+        obj_time_manager,
+        0
+    );
+
+if (
+    instance_exists(_manager)
+    && (_manager).transicao_estado
+        != TransitionState.jogando
+)
+{
+    input_h = 0;
+    input_v = 0;
+
+    velh = 0;
+    velv = 0;
+
+    exit;
+}
+
 
 //==================================================
 // SISTEMA TEMPORAL

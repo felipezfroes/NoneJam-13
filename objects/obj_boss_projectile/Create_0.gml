@@ -137,6 +137,8 @@ aplicar_visual = function()
     }
 };
 
+reacao_disparada = false;
+
 executar_reacao_em_cadeia = function(
     _reacao_x,
     _reacao_y,

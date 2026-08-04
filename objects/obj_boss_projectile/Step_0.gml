@@ -209,179 +209,6 @@ if (ignorar_player_frames <= 0)
     }
 }
 
-
-//==================================================
-// COLISÃO ENTRE PROJÉTEIS
-//==================================================
-
-if (
-    pode_multiplicar
-    && !refletido
-    && geracao == 0
-    && reacao_grace <= 0
-    && !reacao_processada
-)
-{
-    var _outro = collision_circle(
-        x,
-        y,
-        6,
-        obj_boss_projectile,
-        false,
-        true
-    );
-
-    if (
-        _outro != noone
-        && _outro != id
-        && instance_exists(_outro)
-        && (_outro).pode_multiplicar
-        && !(_outro).refletido
-        && (_outro).geracao == 0
-        && (_outro).reacao_grace <= 0
-        && !(_outro).reacao_processada
-    )
-    {
-        // Somente uma das instâncias processa a reação.
-        if (id < _outro)
-        {
-            reacao_processada = true;
-            (_outro).reacao_processada = true;
-
-            var _reacao_x =
-                (x + (_outro).x)
-                * 0.5;
-
-            var _reacao_y =
-                (y + (_outro).y)
-                * 0.5;
-
-            var _boss = instance_find(
-                obj_boss,
-                0
-            );
-
-            if (instance_exists(_boss))
-            {
-                var _vel = 1.7;
-
-                var _direcoes =
-                [
-                    225,
-                    270,
-                    315
-                ];
-
-                for (
-                    var _i = 0;
-                    _i
-                        < array_length(
-                            _direcoes
-                        );
-                    _i++
-                )
-                {
-                    if (
-                        instance_number(
-                            obj_boss_projectile
-                        )
-                        >= (_boss).
-                            maximo_projeteis
-                    )
-                    {
-                        break;
-                    }
-
-                    var _dir =
-                        _direcoes[_i];
-
-                    var _filho =
-                        instance_create_depth(
-                            _reacao_x,
-                            _reacao_y,
-                            depth,
-                            obj_boss_projectile
-                        );
-
-                    (_filho).vel_x =
-                        lengthdir_x(
-                            _vel,
-                            _dir
-                        );
-
-                    (_filho).vel_y =
-                        lengthdir_y(
-                            _vel,
-                            _dir
-                        );
-
-                    (_filho).geracao = 1;
-
-                    (_filho).
-                        pode_multiplicar =
-                            false;
-
-                    (_filho).
-                        pode_danificar_boss =
-                            false;
-
-                    (_filho).reacao_grace =
-                        20;
-
-                    (_filho).image_blend =
-                        c_aqua;
-                    
-                    (_filho).tipo_tiro = ProjectileType.chain;
-                    (_filho).aplicar_visual();
-                }
-            }
-
-            // Pequeno flash usando os próprios rastros.
-            repeat (3)
-            {
-                var _vfx =
-                    instance_create_depth(
-                        _reacao_x
-                            + irandom_range(
-                                -4,
-                                4
-                            ),
-                        _reacao_y
-                            + irandom_range(
-                                -4,
-                                4
-                            ),
-                        depth + 2,
-                        obj_echo_vfx
-                    );
-
-                (_vfx).sprite_index =
-                    sprite_index;
-
-                (_vfx).image_index =
-                    image_index;
-
-                (_vfx).image_speed = 0;
-
-                (_vfx).image_blend =
-                    c_aqua;
-
-                (_vfx).image_alpha =
-                    0.65;
-            }
-
-            with (_outro)
-            {
-                instance_destroy();
-            }
-
-            instance_destroy();
-            exit;
-        }
-    }
-}
-
-
 //==================================================
 // COLISÃO COM CAIXA
 //==================================================
@@ -471,6 +298,30 @@ if (_colisor != noone)
 {
     instance_destroy();
     exit;
+}
+
+if (reacao_disparada)
+{
+    exit;
+}
+
+reacao_disparada = true;
+
+var _par = noone;
+
+with (obj_boss_projectile)
+{
+    if (
+        id != other.id
+        && pode_multiplicar
+        && geracao == 0
+        && reacao_grupo
+            == other.reacao_grupo
+        && !reacao_disparada
+    )
+    {
+        _par = id;
+    }
 }
 
 

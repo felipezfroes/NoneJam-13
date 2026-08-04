@@ -9,7 +9,6 @@ enum BossState
     carregando,
     disparando,
     atingido,
-    transicao_fase,
     movendo,
     derrotado
 }
@@ -39,16 +38,7 @@ invulneravel = false;
 //==================================================
 
 fase_efeito_timer = 0;
-fase_efeito_duracao = 54;
-
-fase_transicao_progresso = 0;
-
-ampulheta_frame = 0;
-ampulheta_velocidade = 0.22;
-
-transicao_flash_alpha = 0;
-
-proxima_posicao_x = x;
+fase_efeito_duracao = 24;
 
 //==================================================
 // POSIÇÃO
@@ -779,84 +769,63 @@ maquina_de_estado = function()
 
         case BossState.atingido:
         {
-            timer--;
-        
-            if (timer <= 0)
-            {
-                if (vida <= 0)
-                {
-                    estado = BossState.derrotado;
-                    derrota_timer = 90;
-        
-                    with (obj_boss_projectile)
-                    {
-                        instance_destroy();
-                    }
-        
-                    with (obj_boss_orb)
-                    {
-                        instance_destroy();
-                    }
-                }
-                else
-                {
-                    //==================================================
-                    // PREPARAR NOVA FASE
-                    //==================================================
-        
-                    fase++;
-        
-                    indice_posicao = clamp(
-                        indice_posicao + 1,
-                        0,
-                        array_length(posicoes_boss) - 1
-                    );
-        
-                    proxima_posicao_x =
-                        posicoes_boss[indice_posicao];
-        
-                    indice_ataque = 0;
-        
-                    onda_diagonal_ativa = false;
-        
-                    with (obj_boss_projectile)
-                    {
-                        instance_destroy();
-                    }
-        
-                    with (obj_boss_orb)
-                    {
-                        instance_destroy();
-                    }
-        
-        
-                    //==================================================
-                    // INICIAR TRANSIÇÃO
-                    //==================================================
-        
-                    estado =
-                        BossState.transicao_fase;
-        
-                    timer =
-                        fase_efeito_duracao;
-        
-                    fase_efeito_timer =
-                        fase_efeito_duracao;
-        
-                    fase_transicao_progresso = 0;
-        
-                    ampulheta_frame = 0;
-        
-                    transicao_flash_alpha = 0.35;
-        
-                    escala_x_visual = 1.15;
-                    escala_y_visual = 0.85;
-                }
-            }
-        
-            break;
-        }
-            
+           timer--;
+       
+           if (timer <= 0)
+           {
+               if (vida <= 0)
+               {
+                   estado = BossState.derrotado;
+                   derrota_timer = 90;
+       
+                   onda_diagonal_ativa = false;
+       
+                   with (obj_boss_projectile)
+                   {
+                       instance_destroy();
+                   }
+       
+                   with (obj_boss_orb)
+                   {
+                       instance_destroy();
+                   }
+               }
+               else
+               {
+                   // Avança diretamente para a próxima fase.
+                   fase++;
+       
+                   indice_posicao = clamp(
+                       indice_posicao + 1,
+                       0,
+                       array_length(posicoes_boss) - 1
+                   );
+       
+                   alvo_x =
+                       posicoes_boss[indice_posicao];
+       
+                   indice_ataque = 0;
+       
+                   onda_diagonal_ativa = false;
+                   fase_efeito_timer = fase_efeito_duracao;
+       
+                   with (obj_boss_projectile)
+                   {
+                       instance_destroy();
+                   }
+       
+                   with (obj_boss_orb)
+                   {
+                       instance_destroy();
+                   }
+       
+                   estado = BossState.movendo;
+               }
+           }
+       
+           break;
+       }
+               
         case BossState.movendo:
        {
            x = lerp(
@@ -948,91 +917,6 @@ maquina_de_estado = function()
 
             break;
         }
-            
-        case BossState.transicao_fase:
-        {
-            timer--;
-        
-            fase_efeito_timer = timer;
-        
-            fase_transicao_progresso =
-                1
-                - timer
-                / max(
-                    1,
-                    fase_efeito_duracao
-                );
-        
-        
-            //==================================================
-            // AMPULHETA
-            //==================================================
-        
-            var _vel_ampulheta =
-                ampulheta_velocidade;
-        
-            if (fase >= 3)
-            {
-                _vel_ampulheta *= 1.25;
-            }
-        
-            ampulheta_frame +=
-                _vel_ampulheta;
-        
-            var _frames_ampulheta =
-                sprite_get_number(
-                    spr_boss_hourglass_transition
-                );
-        
-            if (_frames_ampulheta > 0)
-            {
-                ampulheta_frame =
-                    ampulheta_frame
-                    mod _frames_ampulheta;
-            }
-        
-        
-            //==================================================
-            // PULSO DO BOSS
-            //==================================================
-        
-            var _pulso =
-                sin(
-                    fase_transicao_progresso
-                    * pi
-                    * 6
-                );
-        
-            escala_x_visual =
-                1 + _pulso * 0.06;
-        
-            escala_y_visual =
-                1 - _pulso * 0.04;
-        
-            cor_visual =
-                merge_colour(
-                    c_white,
-                    c_aqua,
-                    fase_transicao_progresso
-                );
-        
-        
-            //==================================================
-            // FINALIZAR
-            //==================================================
-        
-            if (timer <= 0)
-            {
-                alvo_x =
-                    proxima_posicao_x;
-        
-                estado =
-                    BossState.movendo;
-        
-                transicao_flash_alpha = 0.5;
-            }
-        
-            break;
-        }    
+         
     }
 };  

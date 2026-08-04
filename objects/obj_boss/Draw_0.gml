@@ -151,82 +151,21 @@ if (estado == BossState.carregando)
 if (fase_efeito_timer > 0)
 {
     var _progresso =
-        1
-        - fase_efeito_timer
-        / fase_efeito_duracao;
+        1 - fase_efeito_timer / fase_efeito_duracao;
 
-    var _raio =
-        lerp(
-            8,
-            56,
-            _progresso
-        );
-
-    draw_set_colour(c_aqua);
-
-    draw_set_alpha(
-        1 - _progresso
-    );
-
-    draw_circle(
-        x,
-        y + idle_offset_y,
-        _raio,
-        true
-    );
-
-    draw_set_alpha(1);
-    draw_set_colour(c_white);
-}
-
-//==================================================
-// AMPULHETA DA TRANSIÇÃO
-//==================================================
-
-if (
-    estado == BossState.transicao_fase
-    && sprite_exists(
-        spr_boss_hourglass_transition
-    )
-)
-{
-    var _entrada = clamp(
-        fase_transicao_progresso / 0.2,
-        0,
-        1
-    );
-
-    var _saida = clamp(
-        (1 - fase_transicao_progresso) / 0.2,
-        0,
-        1
-    );
-
-    var _alpha =
-        min(_entrada, _saida);
-
-    var _pulso =
-        1
-        + sin(current_time * 0.025)
-        * 0.08;
-
-    var _subida =
-        sin(
-            fase_transicao_progresso
-            * pi
-        )
-        * 10;
+    var _escala =
+        1 + sin(_progresso * pi) * 0.12;
 
     draw_sprite_ext(
-        spr_boss_hourglass_transition,
-        floor(ampulheta_frame),
-        x,
-        y - 44 - _subida,
-        _pulso,
-        _pulso,
-        0,
-        c_white,
-        _alpha
+        sprite_index,
+        image_index,
+        x + draw_offset_x,
+        y + idle_offset_y + draw_offset_y,
+        escala_x_visual * _escala,
+        escala_y_visual * _escala,
+        image_angle,
+        c_aqua,
+        0.35
     );
 }
 
