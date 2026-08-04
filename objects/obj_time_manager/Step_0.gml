@@ -4,8 +4,10 @@
 
 if (
     transicao_estado
-    == TransitionState.jogando
-    && keyboard_check_pressed(ord("R"))
+        == TransitionState.jogando
+    && keyboard_check_pressed(
+        ord("R")
+    )
 )
 {
     room_restart();
@@ -47,7 +49,7 @@ if (
 
 
 //==================================================
-// ENTRANDO NA ROOM
+// ENTRADA DA ROOM — 30 FRAMES
 //==================================================
 
 if (
@@ -55,11 +57,26 @@ if (
     == TransitionState.entrando
 )
 {
-    transicao_alpha -=
-        transicao_velocidade_entrada;
+    transicao_contador++;
 
-    if (transicao_alpha <= 0)
+    var _progresso_entrada =
+        clamp(
+            transicao_contador
+            / transicao_frames_entrada,
+            0,
+            1
+        );
+
+    transicao_alpha =
+        1 - _progresso_entrada;
+
+
+    if (
+        transicao_contador
+        >= transicao_frames_entrada
+    )
     {
+        transicao_contador = 0;
         transicao_alpha = 0;
 
         transicao_estado =
@@ -71,7 +88,7 @@ if (
 
 
 //==================================================
-// SAINDO DA ROOM
+// SAÍDA DA ROOM — 30 FRAMES
 //==================================================
 
 if (
@@ -79,22 +96,47 @@ if (
     == TransitionState.saindo
 )
 {
-    transicao_alpha +=
-        transicao_velocidade_saida;
+    transicao_contador++;
+
+    var _progresso_saida =
+        clamp(
+            transicao_contador
+            / transicao_frames_saida,
+            0,
+            1
+        );
+
+    transicao_alpha =
+        _progresso_saida;
+
 
     if (
-        transicao_alpha >= 1
+        transicao_contador
+            >= transicao_frames_saida
         && !transicao_trocou_room
     )
     {
         transicao_alpha = 1;
         transicao_trocou_room = true;
 
-        if (transicao_room_destino != -1)
+        if (
+            transicao_room_destino
+            != -1
+        )
         {
             room_goto(
                 transicao_room_destino
             );
+        }
+        else
+        {
+            // Segurança: retorna à gameplay
+            // caso o destino seja inválido.
+            transicao_estado =
+                TransitionState.jogando;
+
+            transicao_alpha = 0;
+            transicao_contador = 0;
         }
     }
 

@@ -148,9 +148,8 @@ criar_eco_teste = function()
     return eco_id;
 };
 
-
 //==================================================
-// CONCLUIR MVP
+// CONCLUIR FASE
 //==================================================
 
 concluir_mvp = function()
@@ -163,6 +162,11 @@ concluir_mvp = function()
     vitoria = true;
     gravando = false;
 
+
+    //==================================================
+    // PARAR PLAYER
+    //==================================================
+
     if (instance_exists(playerid))
     {
         (playerid).velh = 0;
@@ -172,22 +176,46 @@ concluir_mvp = function()
         (playerid).input_v = 0;
     }
 
+
+    //==================================================
+    // PARAR ECO
+    //==================================================
+
     if (instance_exists(eco_id))
     {
         (eco_id).velh = 0;
         (eco_id).velv = 0;
+
         (eco_id).reproduzindo = false;
     }
-    
-    var _proxima_room =
-    obter_proxima_room();
 
-    if (_proxima_room != -1)
+
+    //==================================================
+    // BOSS É O FINAL ATUAL
+    //==================================================
+
+    // Não tenta procurar nem acessar outra room.
+    if (room == rm_boss)
     {
-        iniciar_transicao_room(
-            _proxima_room
-        );
+        return;
     }
+
+
+    //==================================================
+    // PRÓXIMA ROOM
+    //==================================================
+
+    var _proxima_room =
+        obter_proxima_room();
+
+    if (_proxima_room == -1)
+    {
+        return;
+    }
+
+    iniciar_transicao_room(
+        _proxima_room
+    );
 };
 
 //==================================================
@@ -201,16 +229,24 @@ enum TransitionState
     saindo
 }
 
+
+//==================================================
+// CONFIGURAÇÃO
+//==================================================
+
 transicao_estado =
     TransitionState.entrando;
 
 transicao_alpha = 1;
 
-// Aproximadamente:
-// entrada = 9 frames
-// saída   = 11 frames
-transicao_velocidade_entrada = 0.12;
-transicao_velocidade_saida = 0.095;
+// Entre duas rooms:
+// 30 frames de saída
+// 30 frames de entrada
+// Total: 60 frames.
+transicao_frames_saida = 30;
+transicao_frames_entrada = 30;
+
+transicao_contador = 0;
 
 transicao_room_destino = -1;
 transicao_trocou_room = false;
@@ -221,12 +257,112 @@ transicao_trocou_room = false;
 //==================================================
 
 transicao_ampulheta_frame = 0;
-
-// Mais rápida que o valor atual de 0.18.
-transicao_ampulheta_velocidade = 0.48;
-
-// Escala inteira preserva pixel art.
-// Um sprite 16x16 ficará com 64x64.
+transicao_ampulheta_velocidade = 0.32;
 transicao_ampulheta_escala = 4;
 
 transicao_tempo = 0;
+
+
+//==================================================
+// ENCONTRAR PRÓXIMA ROOM
+//==================================================
+
+obter_proxima_room = function()
+{
+    switch (room)
+    {
+        case rm_tuto_temporal:
+        {
+            return rm_tuto_caixa;
+        }
+
+        case rm_tuto_caixa:
+        {
+            return rm_3;
+        }
+
+        case rm_3:
+        {
+            return rm_boss;
+        }
+
+        // O boss é atualmente a última room.
+        case rm_boss:
+        {
+            return -1;
+        }
+    }
+
+    return -1;
+};
+
+
+//==================================================
+// INICIAR TRANSIÇÃO
+//==================================================
+
+iniciar_transicao_room = function(
+    _room_destino
+)
+{
+    // Já está saindo.
+    if (
+        transicao_estado
+        == TransitionState.saindo
+    )
+    {
+        return false;
+    }
+
+
+    // Não existe uma room de destino.
+    if (_room_destino == -1)
+    {
+        return false;
+    }
+
+
+    transicao_room_destino =
+        _room_destino;
+
+    transicao_estado =
+        TransitionState.saindo;
+
+    transicao_contador = 0;
+    transicao_alpha = 0;
+
+    transicao_trocou_room = false;
+
+    transicao_ampulheta_frame = 0;
+    transicao_tempo = 0;
+
+
+    //==================================================
+    // PARAR O PLAYER
+    //==================================================
+
+    if (instance_exists(playerid))
+    {
+        (playerid).input_h = 0;
+        (playerid).input_v = 0;
+
+        (playerid).velh = 0;
+        (playerid).velv = 0;
+    }
+
+
+    //==================================================
+    // PARAR O ECO
+    //==================================================
+
+    if (instance_exists(eco_id))
+    {
+        (eco_id).velh = 0;
+        (eco_id).velv = 0;
+
+        (eco_id).reproduzindo = false;
+    }
+
+
+    return true;
+};
