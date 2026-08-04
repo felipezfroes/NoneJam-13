@@ -7,13 +7,41 @@ vel_y = 4;
 
 
 //==================================================
-// ESTADO
+// TIPO E ESTADO
 //==================================================
 
 refletido = false;
 
+pode_danificar_boss = false;
+
+pode_multiplicar = false;
+geracao = 0;
+
+reacao_grace = 10;
+reacao_processada = false;
+
+ignorar_player_frames = 4;
+
+
+//==================================================
+// TEMPO DE VIDA
+//==================================================
+
+tempo_vida = 240;
+
+
+//==================================================
+// REFLEXÃO
+//==================================================
+
 cooldown_reflexao = 0;
 
-image_speed = 0;
 
+//==================================================
+// VISUAL
+//==================================================
+
+image_speed = 0.25;
 image_blend = c_white;
+
+escala_visual = 1;

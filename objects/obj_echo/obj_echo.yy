@@ -33,6 +33,9 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":null,
-  "spriteMaskId":null,
+  "spriteMaskId":{
+    "name":"spr_player_idle_down",
+    "path":"sprites/spr_player_idle_down/spr_player_idle_down.yy",
+  },
   "visible":true,
 }

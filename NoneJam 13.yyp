@@ -42,6 +42,7 @@
   },
   "name":"NoneJam 13",
   "resources":[
+    {"id":{"name":"obj_boss_orb","path":"objects/obj_boss_orb/obj_boss_orb.yy",},},
     {"id":{"name":"obj_boss_projectile","path":"objects/obj_boss_projectile/obj_boss_projectile.yy",},},
     {"id":{"name":"obj_boss","path":"objects/obj_boss/obj_boss.yy",},},
     {"id":{"name":"obj_box_door","path":"objects/obj_box_door/obj_box_door.yy",},},
