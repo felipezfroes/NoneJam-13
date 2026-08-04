@@ -5,7 +5,7 @@ if (!(other).refletido)
 
 if (invulneravel)
 {
-    exit;
+    exit; 
 }
 
 vida--;

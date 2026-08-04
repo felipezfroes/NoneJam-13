@@ -11,7 +11,7 @@ enum BossState
 
 vida = 2;
 
-estado = BossState.esperando;
+estado = BossState.dormindo;
 timer = 0;
 
 fase = 1;
@@ -47,7 +47,27 @@ maquina_de_estado = function ()
    {
        case BossState.dormindo:
        {
-           // Espera o jogador entrar na arena.
+            if (!ativado)
+            {
+                var _player = instance_find(obj_player, 0);
+                var _caixa  = instance_find(obj_box, 0);
+            
+                if (
+                    instance_exists(_player)
+                    && instance_exists(_caixa)
+                    && (_player).y < 240
+                    && (_caixa).y < 240
+                )
+                {
+                    ativado = true;
+            
+                    estado = BossState.esperando;
+                    timer = 90;
+            
+                    (_player).limpar_historico_temporal();
+                }
+            }   
+        
            break;
        }
    
@@ -98,7 +118,7 @@ maquina_de_estado = function ()
                }
                else
                {
-                   alvo_x = 240;
+                   alvo_x = 368;
                    estado = BossState.movendo;
                }
            }

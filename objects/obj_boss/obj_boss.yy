@@ -32,8 +32,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_colisor",
-    "path":"sprites/spr_colisor/spr_colisor.yy",
+    "name":"spr_boss",
+    "path":"sprites/spr_boss/spr_boss.yy",
   },
   "spriteMaskId":null,
   "visible":true,
