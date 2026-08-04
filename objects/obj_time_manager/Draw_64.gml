@@ -120,13 +120,19 @@ if (transicao_alpha > 0)
     var _gui_height =
         display_get_gui_height();
 
+    var _centro_x =
+        floor(_gui_width * 0.5);
 
-    // Fundo preto.
-    draw_set_alpha(
-        transicao_alpha
-    );
+    var _centro_y =
+        floor(_gui_height * 0.5);
+
+
+    //==================================================
+    // FUNDO
+    //==================================================
 
     draw_set_colour(c_black);
+    draw_set_alpha(transicao_alpha);
 
     draw_rectangle(
         0,
@@ -137,32 +143,147 @@ if (transicao_alpha > 0)
     );
 
 
-    // Ampulheta no centro.
-    var _ampulheta_alpha =
-        clamp(
-            transicao_alpha * 1.35,
-            0,
-            1
+    //==================================================
+    // BLOCOS PIXELADOS AO REDOR
+    //==================================================
+
+    var _pulso =
+        0.5
+        + sin(transicao_tempo * 0.3)
+        * 0.5;
+
+    var _efeito_alpha =
+        transicao_alpha
+        * (0.18 + _pulso * 0.12);
+
+    draw_set_colour(c_aqua);
+    draw_set_alpha(_efeito_alpha);
+
+    var _distancia =
+        42 + round(_pulso * 5);
+
+    // Esquerda.
+    draw_rectangle(
+        _centro_x - _distancia - 12,
+        _centro_y - 2,
+        _centro_x - _distancia,
+        _centro_y + 2,
+        false
+    );
+
+    // Direita.
+    draw_rectangle(
+        _centro_x + _distancia,
+        _centro_y - 2,
+        _centro_x + _distancia + 12,
+        _centro_y + 2,
+        false
+    );
+
+    // Cima.
+    draw_rectangle(
+        _centro_x - 2,
+        _centro_y - _distancia - 12,
+        _centro_x + 2,
+        _centro_y - _distancia,
+        false
+    );
+
+    // Baixo.
+    draw_rectangle(
+        _centro_x - 2,
+        _centro_y + _distancia,
+        _centro_x + 2,
+        _centro_y + _distancia + 12,
+        false
+    );
+
+
+    //==================================================
+    // CENTRALIZAÇÃO VISUAL DA AMPULHETA
+    //==================================================
+
+    if (
+        sprite_exists(
+            spr_boss_hourglass_transition
+        )
+    )
+    {
+        var _sprite =
+            spr_boss_hourglass_transition;
+
+        var _escala =
+            transicao_ampulheta_escala;
+
+        var _largura =
+            sprite_get_width(_sprite);
+
+        var _altura =
+            sprite_get_height(_sprite);
+
+        var _origem_x =
+            sprite_get_xoffset(_sprite);
+
+        var _origem_y =
+            sprite_get_yoffset(_sprite);
+
+
+        // Compensa qualquer origem configurada no sprite.
+        var _draw_x = floor(
+            _centro_x
+            + (
+                _origem_x
+                - _largura * 0.5
+            )
+            * _escala
         );
 
-    draw_set_alpha(
-        _ampulheta_alpha
-    );
+        var _draw_y = floor(
+            _centro_y
+            + (
+                _origem_y
+                - _altura * 0.5
+            )
+            * _escala
+        );
 
-    draw_set_colour(c_white);
+        var _frame =
+            floor(
+                transicao_ampulheta_frame
+            );
 
-    draw_sprite_ext(
-        spr_boss_hourglass_transition,
-        floor(transicao_ampulheta_frame),
-        _gui_width * 0.5,
-        _gui_height * 0.5,
-        1,
-        1,
-        0,
-        c_white,
-        _ampulheta_alpha
-    );
 
+        // Sombra ciana pixelada.
+        draw_sprite_ext(
+            _sprite,
+            _frame,
+            _draw_x + 2,
+            _draw_y + 2,
+            _escala,
+            _escala,
+            0,
+            c_aqua,
+            transicao_alpha * 0.32
+        );
+
+        // Ampulheta principal.
+        draw_sprite_ext(
+            _sprite,
+            _frame,
+            _draw_x,
+            _draw_y,
+            _escala,
+            _escala,
+            0,
+            c_white,
+            transicao_alpha
+        );
+    }
+
+
+    //==================================================
+    // RESTAURAR DRAW
+    //==================================================
 
     draw_set_alpha(1);
     draw_set_colour(c_white);

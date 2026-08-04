@@ -186,3 +186,116 @@ draw_sprite_ext(
     cor_visual,
     image_alpha
 );
+
+//==================================================
+// ONDA QUADRADA DE DESTRUIÇÃO
+//==================================================
+
+if (derrota_onda_timer > 0)
+{
+    var _progresso =
+        1
+        - derrota_onda_timer
+        / derrota_onda_duracao;
+
+    var _tamanho =
+        round(
+            lerp(
+                8,
+                58,
+                _progresso
+            )
+        );
+
+    var _alpha =
+        1 - _progresso;
+
+    var _centro_x = floor(x);
+    var _centro_y = floor(
+        y + idle_offset_y
+    );
+
+    draw_set_colour(c_aqua);
+    draw_set_alpha(_alpha * 0.8);
+
+    draw_rectangle(
+        _centro_x - _tamanho,
+        _centro_y - _tamanho,
+        _centro_x + _tamanho,
+        _centro_y + _tamanho,
+        true
+    );
+
+    var _interno =
+        max(
+            1,
+            _tamanho - 5
+        );
+
+    draw_set_colour(c_white);
+    draw_set_alpha(_alpha * 0.45);
+
+    draw_rectangle(
+        _centro_x - _interno,
+        _centro_y - _interno,
+        _centro_x + _interno,
+        _centro_y + _interno,
+        true
+    );
+}
+
+
+//==================================================
+// PARTÍCULAS PIXELADAS
+//==================================================
+
+for (
+    var _i = 0;
+    _i < array_length(
+        derrota_particulas
+    );
+    _i++
+)
+{
+    var _particula =
+        derrota_particulas[_i];
+
+    var _alpha =
+        clamp(
+            _particula.vida
+            / _particula.vida_max,
+            0,
+            1
+        );
+
+    var _px =
+        floor(_particula.x);
+
+    var _py =
+        floor(_particula.y);
+
+    var _tamanho =
+        _particula.tamanho;
+
+    draw_set_colour(
+        _particula.cor
+    );
+
+    draw_set_alpha(_alpha);
+
+    draw_rectangle(
+        _px,
+        _py,
+        _px + _tamanho - 1,
+        _py + _tamanho - 1,
+        false
+    );
+}
+
+
+//==================================================
+// RESTAURAR DRAW
+//==================================================
+
+draw_set_alpha(1);
+draw_set_colour(c_white);

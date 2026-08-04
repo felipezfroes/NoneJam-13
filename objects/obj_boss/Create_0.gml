@@ -182,6 +182,167 @@ cor_visual = c_white;
 
 derrota_timer = 0;
 
+//==================================================
+// DESTRUIÇÃO DO BOSS
+//==================================================
+
+derrota_iniciada = false;
+derrota_explosao_final = false;
+derrota_conclusao_enviada = false;
+
+derrota_timer = 0;
+derrota_duracao = 72;
+
+derrota_spawn_timer = 0;
+
+derrota_onda_timer = 0;
+derrota_onda_duracao = 20;
+
+derrota_particulas = [];
+
+
+//==================================================
+// CRIAR PARTÍCULAS PIXELADAS
+//==================================================
+
+criar_particulas_derrota = function(
+    _quantidade,
+    _forca
+)
+{
+    repeat (_quantidade)
+    {
+        var _px =
+            x + irandom_range(-12, 12);
+
+        var _py =
+            y + irandom_range(-18, 18);
+
+        var _direcao =
+            point_direction(
+                x,
+                y,
+                _px,
+                _py
+            )
+            + random_range(-30, 30);
+
+        var _velocidade =
+            random_range(
+                _forca * 0.55,
+                _forca
+            );
+
+        var _vida =
+            irandom_range(24, 46);
+
+        var _cor = choose(
+            c_white,
+            c_white,
+            c_aqua,
+            make_colour_rgb(
+                120,
+                150,
+                160
+            )
+        );
+
+        var _particula =
+        {
+            x: _px,
+            y: _py,
+
+            vel_x:
+                lengthdir_x(
+                    _velocidade,
+                    _direcao
+                ),
+
+            vel_y:
+                lengthdir_y(
+                    _velocidade,
+                    _direcao
+                ),
+
+            gravidade:
+                random_range(
+                    0.035,
+                    0.075
+                ),
+
+            atrito:
+                random_range(
+                    0.965,
+                    0.985
+                ),
+
+            vida: _vida,
+            vida_max: _vida,
+
+            tamanho:
+                choose(1, 1, 2, 2, 3),
+
+            cor: _cor
+        };
+
+        array_push(
+            derrota_particulas,
+            _particula
+        );
+    }
+};
+
+
+//==================================================
+// INICIAR DERROTA
+//==================================================
+
+iniciar_derrota = function()
+{
+    if (derrota_iniciada)
+    {
+        return;
+    }
+
+    derrota_iniciada = true;
+    derrota_explosao_final = false;
+    derrota_conclusao_enviada = false;
+
+    derrota_timer =
+        derrota_duracao;
+
+    derrota_spawn_timer = 0;
+
+    invulneravel = true;
+
+    onda_diagonal_ativa = false;
+
+    escala_x_visual = 1.12;
+    escala_y_visual = 0.88;
+
+    shake_timer = 18;
+    shake_forca = 2;
+
+
+    // Limpar perigos restantes.
+    with (obj_boss_projectile)
+    {
+        instance_destroy();
+    }
+
+    with (obj_boss_orb)
+    {
+        instance_destroy();
+    }
+
+
+    // Primeiras rachaduras.
+    criar_particulas_derrota(
+        14,
+        1.8
+    );
+};
+
 
 //==================================================
 // SPRITE
@@ -774,22 +935,12 @@ maquina_de_estado = function()
            if (timer <= 0)
            {
                if (vida <= 0)
-               {
-                   estado = BossState.derrotado;
-                   derrota_timer = 90;
-       
-                   onda_diagonal_ativa = false;
-       
-                   with (obj_boss_projectile)
-                   {
-                       instance_destroy();
-                   }
-       
-                   with (obj_boss_orb)
-                   {
-                       instance_destroy();
-                   }
-               }
+                {
+                    estado =
+                        BossState.derrotado;
+                
+                    iniciar_derrota();
+                }
                else
                {
                    // Avança diretamente para a próxima fase.
@@ -880,43 +1031,164 @@ maquina_de_estado = function()
 
         case BossState.derrotado:
         {
-            derrota_timer--;
-
-            shake_timer = 2;
-            shake_forca = 2;
-
-            cor_visual =
-                choose(
-                    c_white,
-                    c_aqua
-                );
-
-            escala_x_visual += 0.005;
-            escala_y_visual += 0.005;
-
-            if (derrota_timer <= 0)
+            // Segurança caso o estado tenha sido definido
+            // por outro trecho de código.
+            if (!derrota_iniciada)
             {
+                iniciar_derrota();
+            }
+        
+        
+            //==================================================
+            // CONTAGEM
+            //==================================================
+        
+            derrota_timer = max(
+                0,
+                derrota_timer - 1
+            );
+        
+            derrota_spawn_timer--;
+        
+        
+            //==================================================
+            // DESINTEGRAÇÃO INICIAL
+            //==================================================
+        
+            if (
+                derrota_timer > 28
+                && derrota_spawn_timer <= 0
+            )
+            {
+                derrota_spawn_timer = 4;
+        
+                criar_particulas_derrota(
+                    2,
+                    1.4
+                );
+        
+                shake_timer = 4;
+                shake_forca = 1;
+            }
+        
+        
+            //==================================================
+            // COMPRIMIR E PISCAR
+            //==================================================
+        
+            if (derrota_timer > 28)
+            {
+                var _progresso =
+                    1
+                    - (
+                        derrota_timer - 28
+                    )
+                    / max(
+                        1,
+                        derrota_duracao - 28
+                    );
+        
+                var _pulso =
+                    sin(
+                        _progresso
+                        * pi
+                        * 10
+                    );
+        
+                escala_x_visual =
+                    1 + _pulso * 0.08;
+        
+                escala_y_visual =
+                    1 - _pulso * 0.06;
+        
+                cor_visual =
+                    (
+                        floor(derrota_timer / 4)
+                        mod 2 == 0
+                    )
+                    ? c_white
+                    : c_aqua;
+        
+                image_alpha = clamp(
+                    (derrota_timer - 28)
+                    / 44,
+                    0.18,
+                    1
+                );
+            }
+        
+        
+            //==================================================
+            // EXPLOSÃO FINAL
+            //==================================================
+        
+            if (
+                derrota_timer <= 28
+                && !derrota_explosao_final
+            )
+            {
+                derrota_explosao_final = true;
+        
+                image_alpha = 0;
+        
+                derrota_onda_timer =
+                    derrota_onda_duracao;
+        
+                criar_particulas_derrota(
+                    32,
+                    3.3
+                );
+        
+                shake_timer = 12;
+                shake_forca = 3;
+            }
+        
+        
+            //==================================================
+            // FINALIZAR BATALHA
+            //==================================================
+        
+            if (
+                derrota_timer <= 0
+                && !derrota_conclusao_enviada
+            )
+            {
+                derrota_conclusao_enviada =
+                    true;
+        
                 var _manager =
                     instance_find(
                         obj_time_manager,
                         0
                     );
-
+        
                 if (
-                    instance_exists(
-                        _manager
+                    instance_exists(_manager)
+                    && variable_instance_exists(
+                        _manager,
+                        "concluir_mvp"
                     )
                 )
                 {
-                    (_manager).
-                        concluir_mvp();
+                    (_manager).concluir_mvp();
                 }
-
+            }
+        
+        
+            // Sem manager, remove o boss depois que todas
+            // as partículas terminarem.
+            if (
+                derrota_conclusao_enviada
+                && array_length(
+                    derrota_particulas
+                ) <= 0
+            )
+            {
                 instance_destroy();
             }
-
+        
             break;
         }
-         
+             
     }
 };  

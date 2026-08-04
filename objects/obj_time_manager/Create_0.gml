@@ -201,80 +201,32 @@ enum TransitionState
     saindo
 }
 
-transicao_estado = TransitionState.entrando;
+transicao_estado =
+    TransitionState.entrando;
 
 transicao_alpha = 1;
 
-transicao_velocidade_entrada = 0.055;
-transicao_velocidade_saida = 0.045;
+// Aproximadamente:
+// entrada = 9 frames
+// saída   = 11 frames
+transicao_velocidade_entrada = 0.12;
+transicao_velocidade_saida = 0.095;
 
 transicao_room_destino = -1;
-
-transicao_ampulheta_frame = 0;
-transicao_ampulheta_velocidade = 0.18;
-
 transicao_trocou_room = false;
 
-obter_proxima_room = function()
-{
-    switch (room)
-    {
-        case rm_tuto_temporal:
-            return rm_tuto_caixa;
 
-        case rm_tuto_caixa:
-            return rm_3;
+//==================================================
+// AMPULHETA
+//==================================================
 
-        case rm_3:
-            return rm_boss;
-    }
+transicao_ampulheta_frame = 0;
 
-    return -1;
-};
+// Mais rápida que o valor atual de 0.18.
+transicao_ampulheta_velocidade = 0.48;
 
-iniciar_transicao_room = function(_room_destino)
-{
-    if (
-        transicao_estado
-        == TransitionState.saindo
-    )
-    {
-        return;
-    }
+// Escala inteira preserva pixel art.
+// Um sprite 16x16 ficará com 64x64.
+transicao_ampulheta_escala = 4;
 
-    if (_room_destino == -1)
-    {
-        return;
-    }
-
-    transicao_room_destino =
-        _room_destino;
-
-    transicao_estado =
-        TransitionState.saindo;
-
-    transicao_trocou_room = false;
-
-    transicao_ampulheta_frame = 0;
-
-
-    // Parar o player.
-    if (instance_exists(playerid))
-    {
-        (playerid).input_h = 0;
-        (playerid).input_v = 0;
-
-        (playerid).velh = 0;
-        (playerid).velv = 0;
-    }
-
-
-    // Parar o eco.
-    if (instance_exists(eco_id))
-    {
-        (eco_id).velh = 0;
-        (eco_id).velv = 0;
-
-        (eco_id).reproduzindo = false;
-    }
-};
+transicao_tempo = 0;

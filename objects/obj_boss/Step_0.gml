@@ -4,6 +4,61 @@
 
 maquina_de_estado();
 
+//==================================================
+// ATUALIZAR PARTÍCULAS DA DERROTA
+//==================================================
+
+for (
+    var _i =
+        array_length(
+            derrota_particulas
+        ) - 1;
+
+    _i >= 0;
+
+    _i--
+)
+{
+    var _particula =
+        derrota_particulas[_i];
+
+    _particula.x +=
+        _particula.vel_x;
+
+    _particula.y +=
+        _particula.vel_y;
+
+    _particula.vel_x *=
+        _particula.atrito;
+
+    _particula.vel_y +=
+        _particula.gravidade;
+
+    _particula.vida--;
+
+    derrota_particulas[_i] =
+        _particula;
+
+    if (_particula.vida <= 0)
+    {
+        array_delete(
+            derrota_particulas,
+            _i,
+            1
+        );
+    }
+}
+
+
+//==================================================
+// ONDA PIXELADA
+//==================================================
+
+if (derrota_onda_timer > 0)
+{
+    derrota_onda_timer--;
+}
+
 if (fase_efeito_timer > 0)
 {
     fase_efeito_timer--;

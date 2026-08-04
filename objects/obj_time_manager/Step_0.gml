@@ -14,6 +14,13 @@ if (
 
 
 //==================================================
+// TEMPO VISUAL
+//==================================================
+
+transicao_tempo++;
+
+
+//==================================================
 // ANIMAR AMPULHETA
 //==================================================
 
@@ -22,25 +29,25 @@ if (
     != TransitionState.jogando
 )
 {
-    transicao_ampulheta_frame +=
-        transicao_ampulheta_velocidade;
-
-    var _total_frames =
+    var _frames_ampulheta =
         sprite_get_number(
             spr_boss_hourglass_transition
         );
 
-    if (_total_frames > 0)
+    if (_frames_ampulheta > 0)
     {
+        transicao_ampulheta_frame +=
+            transicao_ampulheta_velocidade;
+
         transicao_ampulheta_frame =
             transicao_ampulheta_frame
-            mod _total_frames;
+            mod _frames_ampulheta;
     }
 }
 
 
 //==================================================
-// ENTRADA DA ROOM
+// ENTRANDO NA ROOM
 //==================================================
 
 if (
@@ -64,7 +71,7 @@ if (
 
 
 //==================================================
-// SAÍDA DA ROOM
+// SAINDO DA ROOM
 //==================================================
 
 if (
@@ -90,4 +97,6 @@ if (
             );
         }
     }
+
+    exit;
 }
