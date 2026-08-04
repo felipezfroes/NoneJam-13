@@ -6,6 +6,38 @@ if (estado == BossState.carregando)
 {
     draw_set_alpha(0.55);
     draw_set_colour(c_aqua);
+    
+    //==================================================
+    // ANEL TEMPORAL
+    //==================================================
+    
+    var _progresso =
+        1
+        - timer
+        / max(
+            1,
+            tempo_carregamento
+        );
+    
+    var _raio =
+        lerp(
+            20,
+            8,
+            _progresso
+        );
+    
+    draw_set_alpha(
+        0.25 + _progresso * 0.35
+    );
+    
+    draw_circle(
+        x,
+        y + idle_offset_y,
+        _raio,
+        true
+    );
+    
+    draw_set_alpha(0.55);
 
     switch (ataque_atual)
     {
@@ -112,6 +144,40 @@ if (estado == BossState.carregando)
     draw_set_colour(c_white);
 }
 
+//==================================================
+// ONDA DE MUDANÇA DE FASE
+//==================================================
+
+if (fase_efeito_timer > 0)
+{
+    var _progresso =
+        1
+        - fase_efeito_timer
+        / fase_efeito_duracao;
+
+    var _raio =
+        lerp(
+            8,
+            56,
+            _progresso
+        );
+
+    draw_set_colour(c_aqua);
+
+    draw_set_alpha(
+        1 - _progresso
+    );
+
+    draw_circle(
+        x,
+        y + idle_offset_y,
+        _raio,
+        true
+    );
+
+    draw_set_alpha(1);
+    draw_set_colour(c_white);
+}
 
 //==================================================
 // DESENHAR BOSS

@@ -54,6 +54,32 @@ var _y_anterior = y;
 x += vel_x;
 y += vel_y;
 
+//==================================================
+// REGISTRAR RASTRO
+//==================================================
+
+rastro_timer++;
+
+if (rastro_timer >= 2)
+{
+    rastro_timer = 0;
+
+    for (
+        var _i = 3;
+        _i > 0;
+        _i--
+    )
+    {
+        rastro_x[_i] =
+            rastro_x[_i - 1];
+
+        rastro_y[_i] =
+            rastro_y[_i - 1];
+    }
+
+    rastro_x[0] = x;
+    rastro_y[0] = y;
+}
 
 //==================================================
 // COLISÃO COM PLAYER

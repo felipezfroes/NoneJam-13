@@ -33,6 +33,9 @@ estado = BossState.dormindo;
 ativado = false;
 invulneravel = false;
 
+fase_efeito_timer = 0;
+fase_efeito_duracao = 30;
+
 
 //==================================================
 // POSIÇÃO
@@ -752,7 +755,10 @@ maquina_de_estado = function()
                 {
                     // Avançar a fase.
                     fase++;
-        
+                    
+                    fase_efeito_timer =
+                        fase_efeito_duracao;
+                    
                     indice_posicao = clamp(
                         indice_posicao + 1,
                         0,

@@ -4,6 +4,11 @@
 
 maquina_de_estado();
 
+if (fase_efeito_timer > 0)
+{
+    fase_efeito_timer--;
+}
+
 //==================================================
 // SEGUNDA ONDA DIAGONAL
 //==================================================
@@ -93,13 +98,14 @@ if (estado == BossState.carregando)
             tempo_carregamento
         );
 
+    var _pulso =
+        sin(current_time * 0.025);
+    
     escala_x_visual =
-        1 + sin(current_time * 0.02)
-        * 0.025;
-
+        1 + _pulso * 0.035;
+    
     escala_y_visual =
-        1 + sin(current_time * 0.02)
-        * 0.025;
+        1 - _pulso * 0.025;
 
     cor_visual =
         merge_colour(

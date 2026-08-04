@@ -45,3 +45,19 @@ image_speed = 0.25;
 image_blend = c_white;
 
 escala_visual = 1;
+
+//==================================================
+// RASTRO
+//==================================================
+
+rastro_x = array_create(
+    4,
+    x
+);
+
+rastro_y = array_create(
+    4,
+    y
+);
+
+rastro_timer = 0;
