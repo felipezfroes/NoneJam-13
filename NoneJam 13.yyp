@@ -66,6 +66,8 @@
     {"id":{"name":"scr_atualizar_profundidade","path":"scripts/scr_atualizar_profundidade/scr_atualizar_profundidade.yy",},},
     {"id":{"name":"scr_door_enums","path":"scripts/scr_door_enums/scr_door_enums.yy",},},
     {"id":{"name":"spr_background","path":"sprites/spr_background/spr_background.yy",},},
+    {"id":{"name":"spr_boss_aviso_cruz","path":"sprites/spr_boss_aviso_cruz/spr_boss_aviso_cruz.yy",},},
+    {"id":{"name":"spr_boss_aviso_principal","path":"sprites/spr_boss_aviso_principal/spr_boss_aviso_principal.yy",},},
     {"id":{"name":"spr_boss_projectile","path":"sprites/spr_boss_projectile/spr_boss_projectile.yy",},},
     {"id":{"name":"spr_boss","path":"sprites/spr_boss/spr_boss.yy",},},
     {"id":{"name":"spr_box_pressure_plate","path":"sprites/spr_box_pressure_plate/spr_box_pressure_plate.yy",},},

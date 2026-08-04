@@ -1,5 +1,5 @@
 //==================================================
-// ANIMAÇÃO
+// PULSO VISUAL
 //==================================================
 
 pulso += 0.15;
@@ -23,7 +23,7 @@ if (timer > 0)
 
 
 //==================================================
-// CRIAR PROJÉTIL
+// VALIDAR BOSS
 //==================================================
 
 if (!instance_exists(boss_id))
@@ -31,6 +31,11 @@ if (!instance_exists(boss_id))
     instance_destroy();
     exit;
 }
+
+
+//==================================================
+// LIMITE DE PROJÉTEIS
+//==================================================
 
 if (
     instance_number(obj_boss_projectile)
@@ -44,11 +49,8 @@ if (
         obj_boss_projectile
     );
 
-    (_tiro).vel_x = 0;
-
-    (_tiro).vel_y =
-        2.5
-        * direcao_vertical;
+    (_tiro).vel_x = vel_x_saida;
+    (_tiro).vel_y = vel_y_saida;
 
     (_tiro).pode_multiplicar = true;
     (_tiro).pode_danificar_boss = false;

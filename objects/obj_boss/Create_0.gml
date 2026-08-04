@@ -43,6 +43,43 @@ posicao_base_y = y;
 
 alvo_x = x;
 
+//==================================================
+// POSIÇÕES DAS TRÊS FASES
+//==================================================
+
+// Arena atual:
+// esquerda = 176
+// centro   = 272
+// direita  = 368
+
+posicoes_boss =
+[
+    272,
+    368,
+    176
+];
+
+indice_posicao = 0;
+
+
+//==================================================
+// ATAQUE DIAGONAL EM DUAS ONDAS
+//==================================================
+
+onda_diagonal_ativa = false;
+onda_diagonal_timer = 0;
+
+
+//==================================================
+// VARIAÇÃO DOS ORBES
+//==================================================
+
+// Alterna:
+// 0 = orbes verticais
+// 1 = orbes laterais
+
+padrao_orbes = 0;
+
 
 //==================================================
 // ATAQUES
@@ -59,7 +96,12 @@ tempo_carregamento = 45;
 maximo_projeteis = 8;
 
 
-// Sequência previsível da primeira fase.
+//==================================================
+// SEQUÊNCIAS DE ATAQUES
+//==================================================
+
+// Fase 1:
+// ensina ataque principal e retrocesso.
 sequencia_fase_1 =
 [
     BossAttack.principal,
@@ -67,13 +109,29 @@ sequencia_fase_1 =
     BossAttack.principal
 ];
 
-// Sequência após o primeiro dano.
+
+// Fase 2:
+// remove a zona segura ao lado do boss.
 sequencia_fase_2 =
 [
     BossAttack.cruz,
     BossAttack.diagonal,
     BossAttack.principal,
     BossAttack.orbes,
+    BossAttack.cruz,
+    BossAttack.principal
+];
+
+
+// Fase 3:
+// pressão maior, mas mantém janelas claras
+// para usar o projétil principal.
+sequencia_fase_3 =
+[
+    BossAttack.orbes,
+    BossAttack.cruz,
+    BossAttack.diagonal,
+    BossAttack.principal,
     BossAttack.cruz,
     BossAttack.principal
 ];
@@ -178,13 +236,25 @@ selecionar_proximo_ataque = function()
 {
     var _sequencia;
 
-    if (fase == 1)
+    switch (fase)
     {
-        _sequencia = sequencia_fase_1;
-    }
-    else
-    {
-        _sequencia = sequencia_fase_2;
+        case 1:
+        {
+            _sequencia = sequencia_fase_1;
+            break;
+        }
+
+        case 2:
+        {
+            _sequencia = sequencia_fase_2;
+            break;
+        }
+
+        default:
+        {
+            _sequencia = sequencia_fase_3;
+            break;
+        }
     }
 
     ataque_atual =
@@ -195,6 +265,11 @@ selecionar_proximo_ataque = function()
 
     indice_ataque++;
 
+
+    //==================================================
+    // REGISTRAR ALVO DA CRUZ
+    //==================================================
+
     var _player = instance_find(
         obj_player,
         0
@@ -202,47 +277,72 @@ selecionar_proximo_ataque = function()
 
     if (instance_exists(_player))
     {
+        // Prevê levemente a continuação do movimento,
+        // sem perseguir o jogador durante o aviso.
+        var _previsao = 18;
+
+        if (fase == 3)
+        {
+            _previsao = 24;
+        }
+
         ataque_alvo_x = clamp(
-            (_player).x + (_player).velh * 18,
+            (_player).x
+            + (_player).velh * _previsao,
             144,
             400
         );
-        
+
         ataque_alvo_y = clamp(
-            (_player).y + (_player).velv * 18,
+            (_player).y
+            + (_player).velv * _previsao,
             96,
             208
         );
     }
 
+
+    //==================================================
+    // TEMPO DE AVISO
+    //==================================================
+
     switch (ataque_atual)
     {
         case BossAttack.principal:
         {
-            tempo_carregamento = 45;
+            // Sempre deve ser legível porque é
+            // a janela necessária para causar dano.
+            tempo_carregamento =
+                (fase == 1) ? 45 : 38;
+
             break;
         }
 
         case BossAttack.cruz:
         {
-            tempo_carregamento = 45;
+            tempo_carregamento =
+                (fase == 3) ? 38 : 45;
+
             break;
         }
 
         case BossAttack.diagonal:
         {
-            tempo_carregamento = 35;
+            tempo_carregamento =
+                (fase == 3) ? 30 : 35;
+
             break;
         }
 
         case BossAttack.orbes:
         {
-            tempo_carregamento = 50;
+            tempo_carregamento =
+                (fase == 3) ? 42 : 50;
+
             break;
         }
     }
 };
-
 
 //==================================================
 // ATAQUE PRINCIPAL
@@ -322,38 +422,59 @@ ataque_cruz = function()
 
 ataque_diagonal = function()
 {
-    var _vel = 4;
+    var _vel = 3.5;
 
-    // Quatro diagonais voltadas para a região
-    // inferior da arena.
-    var _direcoes =
-    [
-        220,
-        240,
-        300,
-        320
-    ];
-
-    for (
-        var _i = 0;
-        _i < array_length(_direcoes);
-        _i++
-    )
+    if (fase == 3)
     {
-        var _dir = _direcoes[_i];
-
-        criar_projetil(
-            x,
-            y + 24,
-            lengthdir_x(_vel, _dir),
-            lengthdir_y(_vel, _dir),
-            false,
-            false,
-            0
-        );
+        _vel = 4;
     }
-};
 
+
+    //==================================================
+    // PRIMEIRA ONDA
+    //==================================================
+
+    // Esquerda.
+    criar_projetil(
+        x,
+        y + 24,
+        lengthdir_x(_vel, 235),
+        lengthdir_y(_vel, 235),
+        false,
+        false,
+        0
+    );
+
+    // Centro.
+    criar_projetil(
+        x,
+        y + 24,
+        0,
+        _vel,
+        false,
+        false,
+        0
+    );
+
+    // Direita.
+    criar_projetil(
+        x,
+        y + 24,
+        lengthdir_x(_vel, 305),
+        lengthdir_y(_vel, 305),
+        false,
+        false,
+        0
+    );
+
+
+    //==================================================
+    // PREPARAR SEGUNDA ONDA
+    //==================================================
+
+    onda_diagonal_ativa = true;
+    onda_diagonal_timer = 18;
+};
 
 //==================================================
 // ATAQUE DOS ORBES
@@ -361,35 +482,90 @@ ataque_diagonal = function()
 
 ataque_orbes = function()
 {
-    // Cantos úteis da arena superior.
-    var _posicoes =
-    [
-        [144, 80,  1],
-        [400, 80,  1],
-        [144, 208, -1],
-        [400, 208, -1]
-    ];
+    //==================================================
+    // PADRÃO VERTICAL
+    //==================================================
 
-    for (
-        var _i = 0;
-        _i < array_length(_posicoes);
-        _i++
-    )
+    if (padrao_orbes == 0)
     {
-        var _orb = instance_create_depth(
-            _posicoes[_i][0],
-            _posicoes[_i][1],
-            depth - 1,
-            obj_boss_orb
-        );
+        var _posicoes =
+        [
+            // x, y, vel_x, vel_y
+            [176, 80,  0,  2.5],
+            [176, 208, 0, -2.5],
 
-        (_orb).direcao_vertical =
-            _posicoes[_i][2];
+            [368, 80,  0,  2.5],
+            [368, 208, 0, -2.5]
+        ];
 
-        (_orb).boss_id = id;
+        for (
+            var _i = 0;
+            _i < array_length(_posicoes);
+            _i++
+        )
+        {
+            var _orb = instance_create_depth(
+                _posicoes[_i][0],
+                _posicoes[_i][1],
+                depth - 1,
+                obj_boss_orb
+            );
+
+            (_orb).vel_x_saida =
+                _posicoes[_i][2];
+
+            (_orb).vel_y_saida =
+                _posicoes[_i][3];
+
+            (_orb).boss_id = id;
+        }
     }
-};
 
+
+    //==================================================
+    // PADRÃO LATERAL
+    //==================================================
+
+    else
+    {
+        var _posicoes =
+        [
+            // Linha superior.
+            [144, 144,  2.5, 0],
+            [400, 144, -2.5, 0],
+
+            // Linha inferior.
+            [144, 192,  2.5, 0],
+            [400, 192, -2.5, 0]
+        ];
+
+        for (
+            var _i = 0;
+            _i < array_length(_posicoes);
+            _i++
+        )
+        {
+            var _orb = instance_create_depth(
+                _posicoes[_i][0],
+                _posicoes[_i][1],
+                depth - 1,
+                obj_boss_orb
+            );
+
+            (_orb).vel_x_saida =
+                _posicoes[_i][2];
+
+            (_orb).vel_y_saida =
+                _posicoes[_i][3];
+
+            (_orb).boss_id = id;
+        }
+    }
+
+
+    // Alternar para a próxima execução.
+    padrao_orbes = 1 - padrao_orbes;
+};
 
 //==================================================
 // EXECUTAR ATAQUE
@@ -521,43 +697,52 @@ maquina_de_estado = function()
         case BossState.disparando:
         {
             executar_ataque();
-
+        
             estado =
                 BossState.esperando;
-
-            if (fase == 1)
+        
+            switch (fase)
             {
-                timer = intervalo_disparo;
+                case 1:
+                {
+                    timer = 60;
+                    break;
+                }
+        
+                case 2:
+                {
+                    timer = 45;
+                    break;
+                }
+        
+                default:
+                {
+                    timer = 30;
+                    break;
+                }
             }
-            else
-            {
-                timer = 65;
-            }
-
+        
             break;
         }
-
 
         case BossState.atingido:
         {
             timer--;
-
+        
             if (timer <= 0)
             {
                 if (vida <= 0)
                 {
                     estado =
                         BossState.derrotado;
-
+        
                     derrota_timer = 90;
-
-                    with (
-                        obj_boss_projectile
-                    )
+        
+                    with (obj_boss_projectile)
                     {
                         instance_destroy();
                     }
-
+        
                     with (obj_boss_orb)
                     {
                         instance_destroy();
@@ -565,48 +750,101 @@ maquina_de_estado = function()
                 }
                 else
                 {
-                    fase = 2;
-
-                    alvo_x = 368;
-
-                    intervalo_disparo = 65;
-
+                    // Avançar a fase.
+                    fase++;
+        
+                    indice_posicao = clamp(
+                        indice_posicao + 1,
+                        0,
+                        array_length(posicoes_boss) - 1
+                    );
+        
+                    alvo_x =
+                        posicoes_boss[
+                            indice_posicao
+                        ];
+        
+                    indice_ataque = 0;
+        
+                    onda_diagonal_ativa = false;
+        
+                    // Dificuldade específica.
+                    switch (fase)
+                    {
+                        case 2:
+                        {
+                            intervalo_disparo = 65;
+                            maximo_projeteis = 8;
+                            break;
+                        }
+        
+                        default:
+                        {
+                            intervalo_disparo = 50;
+                            maximo_projeteis = 8;
+                            break;
+                        }
+                    }
+        
                     estado =
                         BossState.movendo;
                 }
             }
-
+        
             break;
         }
-
 
         case BossState.movendo:
-        {
-            x = lerp(
-                x,
-                alvo_x,
-                0.12
-            );
-
-            if (abs(x - alvo_x) < 1)
-            {
-                x = alvo_x;
-
-                posicao_base_x = x;
-
-                invulneravel = false;
-
-                indice_ataque = 0;
-
-                estado =
-                    BossState.esperando;
-
-                timer = 60;
-            }
-
-            break;
-        }
-
+       {
+           x = lerp(
+               x,
+               alvo_x,
+               0.12
+           );
+       
+           // Rastro temporal durante o deslocamento.
+           if (current_time mod 5 == 0)
+           {
+               var _vfx = instance_create_depth(
+                   x,
+                   y,
+                   depth + 2,
+                   obj_echo_vfx
+               );
+       
+               (_vfx).sprite_index =
+                   sprite_index;
+       
+               (_vfx).image_index =
+                   image_index;
+       
+               (_vfx).image_speed = 0;
+       
+               (_vfx).image_blend =
+                   c_aqua;
+       
+               (_vfx).image_alpha =
+                   0.35;
+           }
+       
+           if (abs(x - alvo_x) < 1)
+           {
+               x = alvo_x;
+       
+               posicao_base_x = x;
+       
+               invulneravel = false;
+       
+               estado =
+                   BossState.esperando;
+       
+               // Pequena pausa para o jogador perceber
+               // a nova posição e reposicionar a caixa.
+               timer = 60;
+           }
+       
+           break;
+       }
 
         case BossState.derrotado:
         {

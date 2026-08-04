@@ -116,7 +116,7 @@ if (ignorar_player_frames <= 0)
                     (_boss).estado =
                         BossState.esperando;
 
-                    (_boss).timer = 90;
+                    (_boss).timer = 60;
                 }
             }
 

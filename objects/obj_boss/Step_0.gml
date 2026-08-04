@@ -4,6 +4,48 @@
 
 maquina_de_estado();
 
+//==================================================
+// SEGUNDA ONDA DIAGONAL
+//==================================================
+
+if (onda_diagonal_ativa)
+{
+    onda_diagonal_timer--;
+
+    if (onda_diagonal_timer <= 0)
+    {
+        onda_diagonal_ativa = false;
+
+        var _vel = 4;
+
+        if (fase == 3)
+        {
+            _vel = 4.4;
+        }
+
+        // Nasce deslocado para fechar os espaços
+        // deixados pela primeira onda.
+        criar_projetil(
+            x - 24,
+            y + 24,
+            lengthdir_x(_vel, 250),
+            lengthdir_y(_vel, 250),
+            false,
+            false,
+            0
+        );
+
+        criar_projetil(
+            x + 24,
+            y + 24,
+            lengthdir_x(_vel, 290),
+            lengthdir_y(_vel, 290),
+            false,
+            false,
+            0
+        );
+    }
+}
 
 //==================================================
 // IDLE

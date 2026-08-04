@@ -17,13 +17,7 @@ if (estado == BossState.carregando)
                 _y += 12
             )
             {
-                draw_rectangle(
-                    x - 1,
-                    _y,
-                    x + 1,
-                    _y + 5,
-                    false
-                );
+                draw_sprite(spr_boss_aviso_principal, 0, x, _y);
             }
 
             break;
@@ -31,46 +25,52 @@ if (estado == BossState.carregando)
 
         case BossAttack.cruz:
         {
-            draw_circle(
-                ataque_alvo_x,
-                ataque_alvo_y,
-                12,
-                true
-            );
-
-            draw_line(
-                ataque_alvo_x - 18,
-                ataque_alvo_y,
-                ataque_alvo_x + 18,
-                ataque_alvo_y
-            );
-
-            draw_line(
-                ataque_alvo_x,
-                ataque_alvo_y - 18,
-                ataque_alvo_x,
-                ataque_alvo_y + 18
-            );
+            
+            draw_sprite(spr_boss_aviso_cruz, 0,ataque_alvo_x, ataque_alvo_y);
 
             break;
         }
 
         case BossAttack.diagonal:
         {
+            // Primeira onda.
             draw_line(
                 x,
                 y + 20,
-                x - 110,
+                x - 100,
                 235
             );
-
+        
             draw_line(
                 x,
                 y + 20,
-                x + 110,
+                x,
                 235
             );
-
+        
+            draw_line(
+                x,
+                y + 20,
+                x + 100,
+                235
+            );
+        
+            // Pequenas marcas indicando que haverá
+            // uma segunda onda deslocada.
+            draw_circle(
+                x - 24,
+                y + 24,
+                3,
+                true
+            );
+        
+            draw_circle(
+                x + 24,
+                y + 24,
+                3,
+                true
+            );
+        
             break;
         }
 
