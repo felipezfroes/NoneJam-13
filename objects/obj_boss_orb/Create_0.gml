@@ -28,3 +28,12 @@ pulso = random(10);
 raio = 5;
 
 image_alpha = 1;
+
+//==================================================
+// REAÇÃO PROGRAMADA
+//==================================================
+
+reacao_grupo = -1;
+
+reacao_alvo_x = x;
+reacao_alvo_y = y;

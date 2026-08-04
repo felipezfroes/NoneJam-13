@@ -55,6 +55,51 @@ x += vel_x;
 y += vel_y;
 
 //==================================================
+// REAÇÃO GARANTIDA NO PONTO DE ENCONTRO
+//==================================================
+
+if (
+    pode_multiplicar
+    && geracao == 0
+    && reacao_grupo >= 0
+    && !reacao_disparada
+)
+{
+    var _distancia_alvo =
+        point_distance(
+            x,
+            y,
+            reacao_alvo_x,
+            reacao_alvo_y
+        );
+
+    var _velocidade_atual =
+        point_distance(
+            0,
+            0,
+            vel_x,
+            vel_y
+        );
+
+    if (
+        _distancia_alvo
+        <= _velocidade_atual + 2
+    )
+    {
+        x = reacao_alvo_x;
+        y = reacao_alvo_y;
+
+        executar_reacao_em_cadeia(
+            reacao_alvo_x,
+            reacao_alvo_y,
+            reacao_grupo
+        );
+
+        exit;
+    }
+}
+
+//==================================================
 // SPAWN DE RASTRO COM SPRITE
 //==================================================
 
@@ -352,6 +397,24 @@ if (
     && cooldown_reflexao <= 0
 )
 {
+    var _reflexao_vfx = instance_create_depth(
+    x,
+    y,
+    depth + 2,
+    obj_animated_vfx
+    );
+    
+    (_reflexao_vfx).sprite_index =
+        spr_boss_proj_main  ;
+    
+    (_reflexao_vfx).image_speed = 0.35;
+    (_reflexao_vfx).image_blend = c_aqua;
+    
+    (_reflexao_vfx).escala_inicial = 0.7;
+    (_reflexao_vfx).escala_final = 1.2;
+    
+    (_reflexao_vfx).fade_inicio_frame = 0.5;
+    
     // Rebate na direção contrária.
     vel_x = -vel_x;
     vel_y = -vel_y;

@@ -9,6 +9,7 @@ enum BossState
     carregando,
     disparando,
     atingido,
+    transicao_fase,
     movendo,
     derrotado
 }
@@ -33,9 +34,21 @@ estado = BossState.dormindo;
 ativado = false;
 invulneravel = false;
 
-fase_efeito_timer = 0;
-fase_efeito_duracao = 30;
+//==================================================
+// TRANSIÇÃO ENTRE FASES
+//==================================================
 
+fase_efeito_timer = 0;
+fase_efeito_duracao = 54;
+
+fase_transicao_progresso = 0;
+
+ampulheta_frame = 0;
+ampulheta_velocidade = 0.22;
+
+transicao_flash_alpha = 0;
+
+proxima_posicao_x = x;
 
 //==================================================
 // POSIÇÃO
@@ -60,6 +73,13 @@ posicoes_boss =
     272,
     368,
     176
+];
+
+intervalos_por_fase =
+[
+    58,
+    44,
+    34
 ];
 
 indice_posicao = 0;
@@ -96,7 +116,7 @@ timer = 0;
 intervalo_disparo = 80;
 tempo_carregamento = 45;
 
-maximo_projeteis = 8;
+maximo_projeteis = 16;
 
 
 //==================================================
@@ -320,35 +340,45 @@ selecionar_proximo_ataque = function()
     {
         case BossAttack.principal:
         {
-            // Sempre deve ser legível porque é
-            // a janela necessária para causar dano.
-            tempo_carregamento =
-                (fase == 1) ? 45 : 38;
-
+            switch (fase)
+            {
+                case 1:
+                    tempo_carregamento = 48;
+                    break;
+    
+                case 2:
+                    tempo_carregamento = 42;
+                    break;
+    
+                default:
+                    tempo_carregamento = 38;
+                    break;
+            }
+    
             break;
         }
-
+    
         case BossAttack.cruz:
         {
             tempo_carregamento =
-                (fase == 3) ? 38 : 45;
-
+                (fase == 3) ? 36 : 43;
+    
             break;
         }
-
+    
         case BossAttack.diagonal:
         {
             tempo_carregamento =
                 (fase == 3) ? 30 : 35;
-
+    
             break;
         }
-
+    
         case BossAttack.orbes:
         {
             tempo_carregamento =
-                (fase == 3) ? 42 : 50;
-
+                (fase == 3) ? 38 : 45;
+    
             break;
         }
     }
@@ -492,6 +522,10 @@ ataque_diagonal = function()
 
 ataque_orbes = function()
 {
+    var _timer_orbe =
+        (fase == 3) ? 42 : 52;
+
+
     //==================================================
     // PADRÃO VERTICAL
     //==================================================
@@ -500,12 +534,13 @@ ataque_orbes = function()
     {
         var _posicoes =
         [
-            // x, y, vel_x, vel_y
-            [176, 80,  0,  2.5],
-            [176, 208, 0, -2.5],
+            // x, y, vx, vy, grupo, alvo_x, alvo_y
 
-            [368, 80,  0,  2.5],
-            [368, 208, 0, -2.5]
+            [176, 80,  0,  2.25, 1, 176, 144],
+            [176, 208, 0, -2.25, 1, 176, 144],
+
+            [368, 80,  0,  2.25, 2, 368, 144],
+            [368, 208, 0, -2.25, 2, 368, 144]
         ];
 
         for (
@@ -527,26 +562,36 @@ ataque_orbes = function()
             (_orb).vel_y_saida =
                 _posicoes[_i][3];
 
+            (_orb).reacao_grupo =
+                _posicoes[_i][4];
+
+            (_orb).reacao_alvo_x =
+                _posicoes[_i][5];
+
+            (_orb).reacao_alvo_y =
+                _posicoes[_i][6];
+
+            (_orb).timer =
+                _timer_orbe;
+
             (_orb).boss_id = id;
         }
     }
 
 
     //==================================================
-    // PADRÃO LATERAL
+    // PADRÃO HORIZONTAL
     //==================================================
 
     else
     {
         var _posicoes =
         [
-            // Linha superior.
-            [144, 144,  2.5, 0],
-            [400, 144, -2.5, 0],
+            [144, 144,  2.25, 0, 3, 272, 144],
+            [400, 144, -2.25, 0, 3, 272, 144],
 
-            // Linha inferior.
-            [144, 192,  2.5, 0],
-            [400, 192, -2.5, 0]
+            [144, 192,  2.25, 0, 4, 272, 192],
+            [400, 192, -2.25, 0, 4, 272, 192]
         ];
 
         for (
@@ -568,13 +613,24 @@ ataque_orbes = function()
             (_orb).vel_y_saida =
                 _posicoes[_i][3];
 
+            (_orb).reacao_grupo =
+                _posicoes[_i][4];
+
+            (_orb).reacao_alvo_x =
+                _posicoes[_i][5];
+
+            (_orb).reacao_alvo_y =
+                _posicoes[_i][6];
+
+            (_orb).timer =
+                _timer_orbe;
+
             (_orb).boss_id = id;
         }
     }
 
-
-    // Alternar para a próxima execução.
-    padrao_orbes = 1 - padrao_orbes;
+    padrao_orbes =
+        1 - padrao_orbes;
 };
 
 //==================================================
@@ -662,7 +718,6 @@ maquina_de_estado = function()
             break;
         }
 
-
         case BossState.esperando:
         {
             timer--;
@@ -708,29 +763,16 @@ maquina_de_estado = function()
         {
             executar_ataque();
         
-            estado =
-                BossState.esperando;
+            estado = BossState.esperando;
         
-            switch (fase)
-            {
-                case 1:
-                {
-                    timer = 60;
-                    break;
-                }
+            var _indice_fase = clamp(
+                fase - 1,
+                0,
+                array_length(intervalos_por_fase) - 1
+            );
         
-                case 2:
-                {
-                    timer = 45;
-                    break;
-                }
-        
-                default:
-                {
-                    timer = 30;
-                    break;
-                }
-            }
+            timer =
+                intervalos_por_fase[_indice_fase];
         
             break;
         }
@@ -743,9 +785,7 @@ maquina_de_estado = function()
             {
                 if (vida <= 0)
                 {
-                    estado =
-                        BossState.derrotado;
-        
+                    estado = BossState.derrotado;
                     derrota_timer = 90;
         
                     with (obj_boss_projectile)
@@ -760,53 +800,63 @@ maquina_de_estado = function()
                 }
                 else
                 {
-                    // Avançar a fase.
+                    //==================================================
+                    // PREPARAR NOVA FASE
+                    //==================================================
+        
                     fase++;
-                    
-                    fase_efeito_timer =
-                        fase_efeito_duracao;
-                    
+        
                     indice_posicao = clamp(
                         indice_posicao + 1,
                         0,
                         array_length(posicoes_boss) - 1
                     );
         
-                    alvo_x =
-                        posicoes_boss[
-                            indice_posicao
-                        ];
+                    proxima_posicao_x =
+                        posicoes_boss[indice_posicao];
         
                     indice_ataque = 0;
         
                     onda_diagonal_ativa = false;
         
-                    // Dificuldade específica.
-                    switch (fase)
+                    with (obj_boss_projectile)
                     {
-                        case 2:
-                        {
-                            intervalo_disparo = 65;
-                            maximo_projeteis = 8;
-                            break;
-                        }
-        
-                        default:
-                        {
-                            intervalo_disparo = 50;
-                            maximo_projeteis = 8;
-                            break;
-                        }
+                        instance_destroy();
                     }
         
+                    with (obj_boss_orb)
+                    {
+                        instance_destroy();
+                    }
+        
+        
+                    //==================================================
+                    // INICIAR TRANSIÇÃO
+                    //==================================================
+        
                     estado =
-                        BossState.movendo;
+                        BossState.transicao_fase;
+        
+                    timer =
+                        fase_efeito_duracao;
+        
+                    fase_efeito_timer =
+                        fase_efeito_duracao;
+        
+                    fase_transicao_progresso = 0;
+        
+                    ampulheta_frame = 0;
+        
+                    transicao_flash_alpha = 0.35;
+        
+                    escala_x_visual = 1.15;
+                    escala_y_visual = 0.85;
                 }
             }
         
             break;
         }
-
+            
         case BossState.movendo:
        {
            x = lerp(
@@ -898,5 +948,91 @@ maquina_de_estado = function()
 
             break;
         }
+            
+        case BossState.transicao_fase:
+        {
+            timer--;
+        
+            fase_efeito_timer = timer;
+        
+            fase_transicao_progresso =
+                1
+                - timer
+                / max(
+                    1,
+                    fase_efeito_duracao
+                );
+        
+        
+            //==================================================
+            // AMPULHETA
+            //==================================================
+        
+            var _vel_ampulheta =
+                ampulheta_velocidade;
+        
+            if (fase >= 3)
+            {
+                _vel_ampulheta *= 1.25;
+            }
+        
+            ampulheta_frame +=
+                _vel_ampulheta;
+        
+            var _frames_ampulheta =
+                sprite_get_number(
+                    spr_boss_hourglass_transition
+                );
+        
+            if (_frames_ampulheta > 0)
+            {
+                ampulheta_frame =
+                    ampulheta_frame
+                    mod _frames_ampulheta;
+            }
+        
+        
+            //==================================================
+            // PULSO DO BOSS
+            //==================================================
+        
+            var _pulso =
+                sin(
+                    fase_transicao_progresso
+                    * pi
+                    * 6
+                );
+        
+            escala_x_visual =
+                1 + _pulso * 0.06;
+        
+            escala_y_visual =
+                1 - _pulso * 0.04;
+        
+            cor_visual =
+                merge_colour(
+                    c_white,
+                    c_aqua,
+                    fase_transicao_progresso
+                );
+        
+        
+            //==================================================
+            // FINALIZAR
+            //==================================================
+        
+            if (timer <= 0)
+            {
+                alvo_x =
+                    proxima_posicao_x;
+        
+                estado =
+                    BossState.movendo;
+        
+                transicao_flash_alpha = 0.5;
+            }
+        
+            break;
+        }    
     }
 };  

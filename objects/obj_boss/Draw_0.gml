@@ -180,6 +180,57 @@ if (fase_efeito_timer > 0)
 }
 
 //==================================================
+// AMPULHETA DA TRANSIÇÃO
+//==================================================
+
+if (
+    estado == BossState.transicao_fase
+    && sprite_exists(
+        spr_boss_hourglass_transition
+    )
+)
+{
+    var _entrada = clamp(
+        fase_transicao_progresso / 0.2,
+        0,
+        1
+    );
+
+    var _saida = clamp(
+        (1 - fase_transicao_progresso) / 0.2,
+        0,
+        1
+    );
+
+    var _alpha =
+        min(_entrada, _saida);
+
+    var _pulso =
+        1
+        + sin(current_time * 0.025)
+        * 0.08;
+
+    var _subida =
+        sin(
+            fase_transicao_progresso
+            * pi
+        )
+        * 10;
+
+    draw_sprite_ext(
+        spr_boss_hourglass_transition,
+        floor(ampulheta_frame),
+        x,
+        y - 44 - _subida,
+        _pulso,
+        _pulso,
+        0,
+        c_white,
+        _alpha
+    );
+}
+
+//==================================================
 // DESENHAR BOSS
 //==================================================
 

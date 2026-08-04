@@ -46,6 +46,7 @@
   "name":"NoneJam 13",
   "resources":[
     {"id":{"name":"fnt_01","path":"fonts/fnt_01/fnt_01.yy",},},
+    {"id":{"name":"obj_animated_vfx","path":"objects/obj_animated_vfx/obj_animated_vfx.yy",},},
     {"id":{"name":"obj_boss_orb","path":"objects/obj_boss_orb/obj_boss_orb.yy",},},
     {"id":{"name":"obj_boss_projectile","path":"objects/obj_boss_projectile/obj_boss_projectile.yy",},},
     {"id":{"name":"obj_boss","path":"objects/obj_boss/obj_boss.yy",},},
@@ -73,6 +74,7 @@
     {"id":{"name":"spr_background","path":"sprites/spr_background/spr_background.yy",},},
     {"id":{"name":"spr_boss_aviso_cruz","path":"sprites/spr_boss_aviso_cruz/spr_boss_aviso_cruz.yy",},},
     {"id":{"name":"spr_boss_aviso_principal","path":"sprites/spr_boss_aviso_principal/spr_boss_aviso_principal.yy",},},
+    {"id":{"name":"spr_boss_hourglass_transition","path":"sprites/spr_boss_hourglass_transition/spr_boss_hourglass_transition.yy",},},
     {"id":{"name":"spr_boss_proj_chain","path":"sprites/spr_boss_proj_chain/spr_boss_proj_chain.yy",},},
     {"id":{"name":"spr_boss_proj_main","path":"sprites/spr_boss_proj_main/spr_boss_proj_main.yy",},},
     {"id":{"name":"spr_boss_proj_normal","path":"sprites/spr_boss_proj_normal/spr_boss_proj_normal.yy",},},

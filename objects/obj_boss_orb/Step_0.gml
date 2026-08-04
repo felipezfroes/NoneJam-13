@@ -59,6 +59,20 @@ if (
     (_tiro).reacao_grace = 12;
 
     (_tiro).image_blend = c_white;
+    
+    (_tiro).reacao_grupo =
+    reacao_grupo;
+
+    (_tiro).reacao_alvo_x =
+        reacao_alvo_x;
+    
+    (_tiro).reacao_alvo_y =
+        reacao_alvo_y;
+    
+    (_tiro).tipo_tiro =
+        ProjectileType.chain;
+    
+    (_tiro).aplicar_visual();
 }
 
 instance_destroy();
