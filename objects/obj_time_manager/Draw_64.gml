@@ -1,7 +1,9 @@
 var _gui_x = 16;
 var _gui_y = 16;
 
-var _barra_largura = 220;
+var escala = 2;
+
+var _barra_largura = (sprite_get_width(spr_record_bar) * 2) - 4 * escala;
 var _barra_altura = 10;
 
 var _progresso = clamp(
@@ -12,6 +14,8 @@ var _progresso = clamp(
 
 draw_set_halign(fa_left);
 draw_set_valign(fa_top);
+
+draw_set_font(fnt_01);
 
 draw_set_alpha(1);
 draw_set_color(c_white);
@@ -74,13 +78,7 @@ var _barra_y = _gui_y + 76;
 
 draw_set_color(c_black);
 
-draw_rectangle(
-    _gui_x,
-    _barra_y,
-    _gui_x + _barra_largura,
-    _barra_y + _barra_altura,
-    false
-);
+draw_sprite_ext(spr_record_bar, 0, _gui_x, _barra_y, escala,escala, 0,c_white,1);
 
 draw_set_color(c_aqua);
 

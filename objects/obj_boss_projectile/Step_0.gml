@@ -55,30 +55,30 @@ x += vel_x;
 y += vel_y;
 
 //==================================================
-// REGISTRAR RASTRO
+// SPAWN DE RASTRO COM SPRITE
 //==================================================
 
-rastro_timer++;
+trail_timer++;
 
-if (rastro_timer >= 2)
+if (trail_timer >= trail_intervalo)
 {
-    rastro_timer = 0;
+    trail_timer = 0;
 
-    for (
-        var _i = 3;
-        _i > 0;
-        _i--
-    )
+    if (trail_sprite != noone)
     {
-        rastro_x[_i] =
-            rastro_x[_i - 1];
+        var _trail = instance_create_depth(
+            x,
+            y,
+            depth + 1,
+            obj_projectile_trail_vfx
+        );
 
-        rastro_y[_i] =
-            rastro_y[_i - 1];
+        (_trail).sprite_index = trail_sprite;
+        (_trail).image_blend = image_blend;
+        (_trail).image_alpha = trail_alpha;
+        (_trail).image_xscale = trail_scale;
+        (_trail).image_yscale = trail_scale;
     }
-
-    rastro_x[0] = x;
-    rastro_y[0] = y;
 }
 
 //==================================================
@@ -218,7 +218,7 @@ if (
 
             if (instance_exists(_boss))
             {
-                var _vel = 2.7;
+                var _vel = 1.7;
 
                 var _direcoes =
                 [
@@ -285,6 +285,9 @@ if (
 
                     (_filho).image_blend =
                         c_aqua;
+                    
+                    (_filho).tipo_tiro = ProjectileType.chain;
+                    (_filho).aplicar_visual();
                 }
             }
 
@@ -356,6 +359,8 @@ if (
     refletido = true;
 
     pode_multiplicar = false;
+    
+    aplicar_visual();
 
     cooldown_reflexao = 8;
     ignorar_player_frames = 5;

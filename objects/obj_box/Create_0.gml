@@ -75,6 +75,42 @@ criar_poeira = function(_direcao_x, _direcao_y)
     }
 };
 
+//==================================================
+// PROMPT DE INTERAÇÃO
+//==================================================
+
+pode_mostrar_prompt = function(_actor)
+{
+    if (!instance_exists(_actor))
+    {
+        return false;
+    }
+
+    var _distancia = point_distance(
+        x,
+        y,
+        (_actor).x,
+        (_actor).y
+    );
+
+    if (_distancia > distancia_maxima)
+    {
+        return false;
+    }
+
+    var _alinhado_horizontal =
+        abs((_actor).y - y)
+        <= margem_alinhamento;
+
+    var _alinhado_vertical =
+        abs((_actor).x - x)
+        <= margem_alinhamento;
+
+    return (
+        _alinhado_horizontal
+        || _alinhado_vertical
+    );
+};
 
 //==================================================
 // EMPURRÃO BLOQUEADO

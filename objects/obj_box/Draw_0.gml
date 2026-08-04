@@ -1,4 +1,27 @@
 //==================================================
+// PROMPT DA TECLA
+//==================================================
+
+var _player = instance_find(obj_player, 0);
+
+if (pode_mostrar_prompt(_player))
+{
+    var _frame =
+        (current_time div 180)
+        mod sprite_get_number(spr_prompt_e_8x8);
+
+    var _offset_y =
+        -15 + round(sin(current_time * 0.01));
+
+    draw_sprite(
+        spr_prompt_e_8x8,
+        _frame,
+        x + 4,
+        y + _offset_y
+    );
+}
+
+//==================================================
 // SHAKE
 //==================================================
 

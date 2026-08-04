@@ -226,6 +226,13 @@ criar_projetil = function(
     // Impede tiros que nasceram juntos de reagirem
     // imediatamente no ponto de criação.
     (_tiro).reacao_grace = 10;
+    
+    (_tiro).tipo_tiro =
+    _pode_danificar_boss
+    ? ProjectileType.principal
+    : ProjectileType.normal;
+
+    (_tiro).aplicar_visual();
 
     return _tiro;
 };
@@ -373,7 +380,7 @@ ataque_principal = function()
 
 ataque_cruz = function()
 {
-    var _vel = 2;
+    var _vel = 1.7;
 
     // Os tiros já nascem afastados do centro,
     // evitando colisão instantânea entre eles.
@@ -425,11 +432,11 @@ ataque_cruz = function()
 
 ataque_diagonal = function()
 {
-    var _vel = 3.5;
+    var _vel = 1.7;
 
     if (fase == 3)
     {
-        _vel = 4;
+        _vel = 2;
     }
 
 
