@@ -544,7 +544,7 @@ ataque_principal = function()
     // Este é o único tiro que pode causar dano
     // depois de ser refletido pela caixa.
     criar_projetil(
-        x,
+        x + 8,
         y + 28,
         0,
         4,
@@ -627,7 +627,7 @@ ataque_diagonal = function()
 
     // Esquerda.
     criar_projetil(
-        x,
+        x + 8,
         y + 24,
         lengthdir_x(_vel, 235),
         lengthdir_y(_vel, 235),
@@ -638,7 +638,7 @@ ataque_diagonal = function()
 
     // Centro.
     criar_projetil(
-        x,
+        x + 8,
         y + 24,
         0,
         _vel,
@@ -649,7 +649,7 @@ ataque_diagonal = function()
 
     // Direita.
     criar_projetil(
-        x,
+        x + 8,
         y + 24,
         lengthdir_x(_vel, 305),
         lengthdir_y(_vel, 305),

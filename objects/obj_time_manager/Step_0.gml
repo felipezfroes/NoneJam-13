@@ -1,4 +1,76 @@
 //==================================================
+// TELA FINAL DO JOGO
+//==================================================
+
+if (
+    room == rm_boss
+    && vitoria
+)
+{
+    tela_final_tempo++;
+
+    // Fade de aproximadamente meio segundo.
+    tela_final_alpha = min(
+        1,
+        tela_final_alpha + 1 / 30
+    );
+
+
+    //==================================================
+    // ACEITAR INPUT DEPOIS DA ENTRADA
+    //==================================================
+
+    if (
+        tela_final_tempo
+        >= tela_final_delay_input
+    )
+    {
+        // Voltar ao começo. Depois, basta alterar
+        // tela_final_room_destino para rm_menu.
+        if (
+            keyboard_check_pressed(
+                vk_enter
+            )
+        )
+        {
+            audio_stop_sound(
+                snd_victory
+            );
+
+            // Precisa ser falso para que o Step volte
+            // a processar a transição nos próximos frames.
+            vitoria = false;
+
+            tela_final_alpha = 0;
+            tela_final_tempo = 0;
+
+            iniciar_transicao_room(
+                tela_final_room_destino
+            );
+
+            exit;
+        }
+
+
+        // Encerrar o jogo.
+        if (
+            keyboard_check_pressed(
+                vk_escape
+            )
+        )
+        {
+            game_end();
+            exit;
+        }
+    }
+
+
+    // Impede que o restante do Step processe
+    // reinício ou transições normais.
+    exit;
+}
+
+//==================================================
 // REINICIAR
 //==================================================
 
@@ -138,6 +210,29 @@ if (
             transicao_alpha = 0;
             transicao_contador = 0;
         }
+    }
+
+    exit;
+}
+
+//==================================================
+// TELA FINAL
+//==================================================
+
+if (
+    room == rm_boss
+    && vitoria
+)
+{
+    if (keyboard_check_pressed(vk_enter))
+    {
+        audio_stop_all();
+        room_goto(rm_tuto_temporal);
+    }
+
+    if (keyboard_check_pressed(vk_escape))
+    {
+        game_end();
     }
 
     exit;

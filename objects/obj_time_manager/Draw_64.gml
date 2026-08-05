@@ -1,3 +1,7 @@
+var _tela_final_ativa =
+    room == rm_boss
+    && vitoria;
+
 var _esconder_interface =
     transicao_estado
     == TransitionState.saindo
@@ -30,7 +34,10 @@ draw_set_color(c_white);
 // TEXTO DO ESTADO
 //==================================================
 
-if (!_esconder_interface)
+if (
+    !_esconder_interface
+    && !_tela_final_ativa
+)
 {
     if (vitoria)
     {
@@ -106,6 +113,355 @@ if (!_esconder_interface)
         + string(floor(frame_gravacao / 60))
         + "s / 15s"
     );
+}
+
+//==================================================
+// TELA FINAL
+//==================================================
+
+if (_tela_final_ativa)
+{
+    var _gui_width =
+        display_get_gui_width();
+
+    var _gui_height =
+        display_get_gui_height();
+
+    var _centro_x =
+        floor(_gui_width * 0.5);
+
+    var _centro_y =
+        floor(_gui_height * 0.5);
+
+    var _alpha =
+        tela_final_alpha;
+
+
+    //==================================================
+    // FUNDO ESCURECIDO
+    //==================================================
+
+    draw_set_color(c_black);
+    draw_set_alpha(_alpha * 0.90);
+
+    draw_rectangle(
+        0,
+        0,
+        _gui_width,
+        _gui_height,
+        false
+    );
+
+
+    //==================================================
+    // PAINEL CENTRAL
+    //==================================================
+
+    var _painel_esquerda =
+        _centro_x - 190;
+
+    var _painel_direita =
+        _centro_x + 190;
+
+    var _painel_cima =
+        _centro_y - 135;
+
+    var _painel_baixo =
+        _centro_y + 135;
+
+    draw_set_color(
+        make_color_rgb(
+            7,
+            20,
+            30
+        )
+    );
+
+    draw_set_alpha(_alpha * 0.92);
+
+    draw_rectangle(
+        _painel_esquerda,
+        _painel_cima,
+        _painel_direita,
+        _painel_baixo,
+        false
+    );
+
+
+    // Contorno ciano.
+    draw_set_color(c_aqua);
+    draw_set_alpha(_alpha * 0.65);
+
+    draw_rectangle(
+        _painel_esquerda,
+        _painel_cima,
+        _painel_direita,
+        _painel_baixo,
+        true
+    );
+
+
+    //==================================================
+    // PARTÍCULAS PIXELADAS
+    //==================================================
+
+    draw_set_color(c_aqua);
+
+    for (var _i = 0; _i < 12; _i++)
+    {
+        var _angulo =
+            _i * 30
+            + tela_final_tempo * 0.45;
+
+        var _distancia =
+            148
+            + sin(
+                tela_final_tempo * 0.05
+                + _i
+            )
+            * 7;
+
+        var _px = floor(
+            _centro_x
+            + lengthdir_x(
+                _distancia,
+                _angulo
+            )
+        );
+
+        var _py = floor(
+            _centro_y
+            + lengthdir_y(
+                _distancia * 0.72,
+                _angulo
+            )
+        );
+
+        var _particula_alpha =
+            0.25
+            + (
+                sin(
+                    tela_final_tempo * 0.08
+                    + _i
+                )
+                * 0.5
+                + 0.5
+            )
+            * 0.45;
+
+        draw_set_alpha(
+            _alpha
+            * _particula_alpha
+        );
+
+        draw_rectangle(
+            _px,
+            _py,
+            _px + 2,
+            _py + 2,
+            false
+        );
+    }
+
+
+    //==================================================
+    // AMPULHETA
+    //==================================================
+
+    if (
+        sprite_exists(
+            spr_boss_hourglass_transition
+        )
+    )
+    {
+        var _sprite =
+            spr_boss_hourglass_transition;
+
+        var _escala = 3;
+
+        var _largura =
+            sprite_get_width(_sprite);
+
+        var _altura =
+            sprite_get_height(_sprite);
+
+        var _origem_x =
+            sprite_get_xoffset(_sprite);
+
+        var _origem_y =
+            sprite_get_yoffset(_sprite);
+
+        var _ampulheta_centro_y =
+            _centro_y - 87;
+
+        var _draw_x = floor(
+            _centro_x
+            + (
+                _origem_x
+                - _largura * 0.5
+            )
+            * _escala
+        );
+
+        var _draw_y = floor(
+            _ampulheta_centro_y
+            + (
+                _origem_y
+                - _altura * 0.5
+            )
+            * _escala
+        );
+
+        var _total_frames =
+            sprite_get_number(_sprite);
+
+        var _frame = 0;
+
+        if (_total_frames > 0)
+        {
+            _frame = floor(
+                tela_final_tempo * 0.24
+            )
+            mod _total_frames;
+        }
+
+
+        // Sombra ciana.
+        draw_sprite_ext(
+            _sprite,
+            _frame,
+            _draw_x + 2,
+            _draw_y + 2,
+            _escala,
+            _escala,
+            0,
+            c_aqua,
+            _alpha * 0.35
+        );
+
+        // Sprite principal.
+        draw_sprite_ext(
+            _sprite,
+            _frame,
+            _draw_x,
+            _draw_y,
+            _escala,
+            _escala,
+            0,
+            c_white,
+            _alpha
+        );
+    }
+
+
+    //==================================================
+    // TEXTOS
+    //==================================================
+
+    draw_set_font(fnt_01);
+
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_middle);
+
+    draw_set_color(c_white);
+    draw_set_alpha(_alpha);
+
+    draw_text_transformed(
+        _centro_x,
+        _centro_y - 26,
+        "O RELÓGIO DAS\nCONSEQUÊNCIAS",
+        2,
+        2,
+        0
+    );
+
+
+    draw_set_color(c_aqua);
+
+    draw_text(
+        _centro_x,
+        _centro_y + 31,
+        "A corrente temporal foi quebrada."
+    );
+
+
+    draw_set_color(c_white);
+    draw_set_alpha(_alpha * 0.82);
+
+    draw_text(
+        _centro_x,
+        _centro_y + 52,
+        "Mas toda consequência deixa um eco."
+    );
+
+
+    //==================================================
+    // OPÇÕES
+    //==================================================
+
+    if (
+        tela_final_tempo
+        >= tela_final_delay_input
+    )
+    {
+        var _piscar =
+            0.68
+            + (
+                sin(
+                    tela_final_tempo
+                    * 0.10
+                )
+                * 0.5
+                + 0.5
+            )
+            * 0.32;
+
+        draw_set_color(c_white);
+        draw_set_alpha(
+            _alpha * _piscar
+        );
+
+        draw_text(
+            _centro_x,
+            _centro_y + 88,
+            "ENTER — JOGAR NOVAMENTE"
+        );
+
+        draw_set_alpha(
+            _alpha * 0.62
+        );
+
+        draw_text(
+            _centro_x,
+            _centro_y + 106,
+            "ESC — SAIR"
+        );
+    }
+
+
+    //==================================================
+    // CRÉDITOS CURTOS
+    //==================================================
+
+    draw_set_color(c_white);
+    draw_set_alpha(_alpha * 0.48);
+
+    draw_text(
+        _centro_x,
+        _painel_baixo - 13,
+        "Felipe Zotareli Froes • NoNeJam 13"
+    );
+
+
+    //==================================================
+    // RESTAURAR DRAW
+    //==================================================
+
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
+
+    draw_set_alpha(1);
+    draw_set_color(c_white);
 }
 
 //==================================================

@@ -17,6 +17,71 @@ time_manager = noone;
 direcao_olhar_x = 0;
 direcao_olhar_y = 1;
 
+//==================================================
+// ATUALIZAR SPRITE PELA DIREÇÃO
+//==================================================
+
+atualizar_sprite_direcao = function()
+{
+    var _novo_sprite =
+        spr_player_idle_down;
+
+    var _escala_x = 1;
+
+
+    //==================================================
+    // VERTICAL
+    //==================================================
+
+    if (direcao_olhar_y < 0)
+    {
+        _novo_sprite =
+            spr_player_idle_up;
+    }
+    else if (direcao_olhar_y > 0)
+    {
+        _novo_sprite =
+            spr_player_idle_down;
+    }
+
+
+    //==================================================
+    // HORIZONTAL
+    //==================================================
+
+    else if (direcao_olhar_x != 0)
+    {
+        _novo_sprite =
+            spr_player_idle_side;
+
+        // O sprite original olha para a direita.
+        // Espelha quando estiver olhando à esquerda.
+        _escala_x =
+            direcao_olhar_x < 0
+            ? -1
+            : 1;
+    }
+
+
+    //==================================================
+    // TROCAR SEM REINICIAR TODO FRAME
+    //==================================================
+
+    if (sprite_index != _novo_sprite)
+    {
+        sprite_index =
+            _novo_sprite;
+
+        image_index = 0;
+    }
+
+
+    image_xscale =
+        _escala_x;
+
+    image_yscale = 1;
+};
+
 enum PlayerEstados
 {
     parado,
@@ -408,3 +473,4 @@ atualizar_retrocesso_forcado = function()
 //==================================================
 
 limpar_historico_temporal();
+atualizar_sprite_direcao();

@@ -1,11 +1,46 @@
 //==================================================
-// REINICIAR SALA
+// LOCALIZAR TIME MANAGER
 //==================================================
 
-if (keyboard_check_pressed(ord("R")))
+if (!instance_exists(time_manager))
 {
-    room_restart();
-    exit;
+    time_manager = instance_find(
+        obj_time_manager,
+        0
+    );
+
+    if (instance_exists(time_manager))
+    {
+        (time_manager).registrar_player(id);
+    }
+}
+
+
+//==================================================
+// BLOQUEAR DURANTE TRANSIÇÃO OU FINAL
+//==================================================
+
+if (instance_exists(time_manager))
+{
+    if (
+        (time_manager).transicao_estado
+            != TransitionState.jogando
+        || (time_manager).vitoria
+    )
+    {
+        input_h = 0;
+        input_v = 0;
+
+        velh = 0;
+        velv = 0;
+
+        estado =
+            PlayerEstados.parado;
+
+        atualizar_sprite_direcao();
+
+        exit;
+    }
 }
 
 
@@ -23,13 +58,12 @@ if (invulneravel_frames > 0)
 // RETROCESSO FORÇADO
 //==================================================
 
-// Enquanto está retrocedendo, não executa:
-// - controles;
-// - gravação do eco;
-// - interação com caixa;
-// - movimento normal.
 if (atualizar_retrocesso_forcado())
 {
+    // O histórico também restaura a direção,
+    // então atualizamos o sprite durante o rewind.
+    atualizar_sprite_direcao();
+
     exit;
 }
 
@@ -40,44 +74,7 @@ if (atualizar_retrocesso_forcado())
 
 maquina_estados();
 
-
-//==================================================
-// LOCALIZAR TIME MANAGER
-//==================================================
-
-if (!instance_exists(time_manager))
-{
-    time_manager = instance_find(
-        obj_time_manager,
-        0
-    );
-
-    if (instance_exists(time_manager))
-    {
-        (time_manager).registrar_player(id);
-    }
-}
-
-var _manager =
-    instance_find(
-        obj_time_manager,
-        0
-    );
-
-if (
-    instance_exists(_manager)
-    && (_manager).transicao_estado
-        != TransitionState.jogando
-)
-{
-    input_h = 0;
-    input_v = 0;
-
-    velh = 0;
-    velv = 0;
-
-    exit;
-}
+atualizar_sprite_direcao();
 
 
 //==================================================
@@ -86,18 +83,6 @@ if (
 
 if (instance_exists(time_manager))
 {
-    // Congela depois da conclusão da fase.
-    if ((time_manager).vitoria)
-    {
-        input_h = 0;
-        input_v = 0;
-
-        velh = 0;
-        velv = 0;
-
-        exit;
-    }
-
     if ((time_manager).permite_eco)
     {
         (time_manager).gravar_comando(
@@ -107,10 +92,13 @@ if (instance_exists(time_manager))
 
         if (
             !(time_manager).eco_criado
-            && keyboard_check_pressed(vk_space)
+            && keyboard_check_pressed(
+                vk_space
+            )
         )
         {
-            (time_manager).criar_eco_teste();
+            (time_manager).
+                criar_eco_teste();
         }
     }
 }
@@ -120,7 +108,11 @@ if (instance_exists(time_manager))
 // EMPURRAR CAIXA
 //==================================================
 
-if (keyboard_check_pressed(ord("E")))
+if (
+    keyboard_check_pressed(
+        ord("E")
+    )
+)
 {
     var _caixa = instance_nearest(
         x,

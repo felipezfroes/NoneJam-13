@@ -15,6 +15,21 @@ eco_id = noone;
 
 vitoria = false;
 
+//==================================================
+// TELA FINAL
+//==================================================
+
+tela_final_alpha = 0;
+tela_final_tempo = 0;
+
+// Evita que o jogador pule a tela imediatamente.
+tela_final_delay_input = 45;
+
+// Enquanto a room de menu não existir,
+// reinicia diretamente no primeiro tutorial.
+tela_final_room_destino =
+    rm_tuto_temporal;
+
 permite_eco = true;
 mostrar_barra_temporal = true;
 

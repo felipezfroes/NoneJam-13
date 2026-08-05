@@ -23,7 +23,7 @@
   ],
   "name":"spr_boss_aviso_principal",
   "nineSlice":null,
-  "origin":4,
+  "origin":9,
   "parent":{
     "name":"Boss",
     "path":"folders/Sprites/Boss.yy",
@@ -75,7 +75,7 @@
     ],
     "visibleRange":null,
     "volume":1.0,
-    "xorigin":4,
+    "xorigin":-4,
     "yorigin":4,
   },
   "swatchColours":null,

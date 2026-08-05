@@ -437,6 +437,7 @@
     {"$GMIncludedFile":"","%Name":"weapon_pick_up.wav","CopyToMask":-1,"filePath":"datafiles/400 Sounds Pack/Weapons","name":"weapon_pick_up.wav","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"weapon_unequip.wav","CopyToMask":-1,"filePath":"datafiles/400 Sounds Pack/Weapons","name":"weapon_unequip.wav","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"weapon_upgrade.wav","CopyToMask":-1,"filePath":"datafiles/400 Sounds Pack/Weapons","name":"weapon_upgrade.wav","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"CREDITOS.txt.txt","CopyToMask":-1,"filePath":"datafiles","name":"CREDITOS.txt.txt","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"Retro Alarm 02.wav","CopyToMask":-1,"filePath":"datafiles/FreeSFX/FreeSFX/GameSFX/Alarms Blip Beeps","name":"Retro Alarm 02.wav","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"Retro Alarm Long 02.wav","CopyToMask":-1,"filePath":"datafiles/FreeSFX/FreeSFX/GameSFX/Alarms Blip Beeps","name":"Retro Alarm Long 02.wav","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"Retro Alarmed 06.wav","CopyToMask":-1,"filePath":"datafiles/FreeSFX/FreeSFX/GameSFX/Alarms Blip Beeps","name":"Retro Alarmed 06.wav","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
@@ -737,8 +738,8 @@
   "resourceType":"GMProject",
   "resourceVersion":"2.0",
   "RoomOrderNodes":[
-    {"roomId":{"name":"rm_tuto_temporal","path":"rooms/rm_tuto_temporal/rm_tuto_temporal.yy",},},
     {"roomId":{"name":"rm_boss","path":"rooms/rm_boss/rm_boss.yy",},},
+    {"roomId":{"name":"rm_tuto_temporal","path":"rooms/rm_tuto_temporal/rm_tuto_temporal.yy",},},
     {"roomId":{"name":"rm_tuto_caixa","path":"rooms/rm_tuto_caixa/rm_tuto_caixa.yy",},},
     {"roomId":{"name":"rm_3","path":"rooms/rm_3/rm_3.yy",},},
   ],

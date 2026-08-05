@@ -127,15 +127,6 @@ definir_aberta = function(_novo_estado)
             4
         );
     }
-
-    if (aberta)
-    {
-        
-    }
-    else
-    {
-        
-    }
 };
 
 

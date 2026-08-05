@@ -31,7 +31,7 @@ if (estado == BossState.carregando)
     );
     
     draw_circle(
-        x,
+        x + 8,
         y + idle_offset_y,
         _raio,
         true
@@ -67,21 +67,21 @@ if (estado == BossState.carregando)
         {
             // Primeira onda.
             draw_line(
-                x,
+                x + 8,
                 y + 20,
                 x - 100,
                 235
             );
         
             draw_line(
-                x,
+                x +8,
                 y + 20,
                 x,
                 235
             );
         
             draw_line(
-                x,
+                x + 8,
                 y + 20,
                 x + 100,
                 235
@@ -90,14 +90,14 @@ if (estado == BossState.carregando)
             // Pequenas marcas indicando que haverá
             // uma segunda onda deslocada.
             draw_circle(
-                x - 24,
+                x - 16,
                 y + 24,
                 3,
                 true
             );
         
             draw_circle(
-                x + 24,
+                x + 32,
                 y + 24,
                 3,
                 true
