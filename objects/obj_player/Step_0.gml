@@ -87,7 +87,9 @@ if (instance_exists(time_manager))
     {
         (time_manager).gravar_comando(
             input_h,
-            input_v
+            input_v,
+            direcao_olhar_x,
+            direcao_olhar_y
         );
 
         if (

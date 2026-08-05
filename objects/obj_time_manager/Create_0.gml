@@ -6,6 +6,9 @@ inicio_y = 0;
 comandos_h = [];
 comandos_v = [];
 
+direcoes_x = [];
+direcoes_y = [];
+
 frame_gravacao = 0;
 max_frames = 60 * 15;
 
@@ -65,9 +68,22 @@ registrar_player = function(_player_id)
 // GRAVAR COMANDO
 //==================================================
 
-gravar_comando = function(_input_h, _input_v)
+//==================================================
+// GRAVAR COMANDO E DIREÇÃO
+//==================================================
+
+gravar_comando = function(
+    _input_h,
+    _input_v,
+    _direcao_x,
+    _direcao_y
+)
 {
-    if (!gravando || eco_criado || vitoria)
+    if (
+        !gravando
+        || eco_criado
+        || vitoria
+    )
     {
         return;
     }
@@ -78,8 +94,58 @@ gravar_comando = function(_input_h, _input_v)
         return;
     }
 
-    comandos_h[frame_gravacao] = clamp(_input_h, -1, 1);
-    comandos_v[frame_gravacao] = clamp(_input_v, -1, 1);
+
+    //==================================================
+    // COMANDOS
+    //==================================================
+
+    comandos_h[frame_gravacao] =
+        clamp(_input_h, -1, 1);
+
+    comandos_v[frame_gravacao] =
+        clamp(_input_v, -1, 1);
+
+
+    //==================================================
+    // DIREÇÃO VISUAL
+    //==================================================
+
+    var _dir_x =
+        sign(_direcao_x);
+
+    var _dir_y =
+        sign(_direcao_y);
+
+
+    // Segurança caso uma direção inválida seja enviada.
+    if (_dir_x == 0 && _dir_y == 0)
+    {
+        if (frame_gravacao > 0)
+        {
+            _dir_x =
+                direcoes_x[
+                    frame_gravacao - 1
+                ];
+
+            _dir_y =
+                direcoes_y[
+                    frame_gravacao - 1
+                ];
+        }
+        else
+        {
+            _dir_x = 0;
+            _dir_y = 1;
+        }
+    }
+
+
+    direcoes_x[frame_gravacao] =
+        _dir_x;
+
+    direcoes_y[frame_gravacao] =
+        _dir_y;
+
 
     frame_gravacao++;
 };
@@ -108,6 +174,9 @@ criar_eco_teste = function()
 
     var _copia_h = [];
     var _copia_v = [];
+    
+    var _copia_direcao_x = [];
+    var _copia_direcao_y = [];
 
     array_copy(
         _copia_h,
@@ -121,6 +190,22 @@ criar_eco_teste = function()
         _copia_v,
         0,
         comandos_v,
+        0,
+        frame_gravacao
+    );
+    
+    array_copy(
+        _copia_direcao_x,
+        0,
+        direcoes_x,
+        0,
+        frame_gravacao
+    );
+    
+    array_copy(
+        _copia_direcao_y,
+        0,
+        direcoes_y,
         0,
         frame_gravacao
     );
@@ -141,6 +226,26 @@ criar_eco_teste = function()
     
     (eco_id).comandos_h = _copia_h;
     (eco_id).comandos_v = _copia_v;
+    
+    (eco_id).direcoes_x =
+        _copia_direcao_x;
+    
+    (eco_id).direcoes_y =
+        _copia_direcao_y;
+    
+    
+    // Aplicar imediatamente a primeira direção gravada.
+    if (frame_gravacao > 0)
+    {
+        (eco_id).direcao_olhar_x =
+            _copia_direcao_x[0];
+    
+        (eco_id).direcao_olhar_y =
+            _copia_direcao_y[0];
+    
+        (eco_id).
+            atualizar_sprite_direcao();
+    }
     
     (eco_id).frame_reproducao = 0;
     (eco_id).reproduzindo = true;
