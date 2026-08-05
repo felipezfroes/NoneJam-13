@@ -123,6 +123,14 @@ efeito_empurrao_bloqueado = function()
 
     escala_visual_x = 1.06;
     escala_visual_y = 0.94;
+    
+    scr_play_sfx(
+        snd_box_blocked,
+        0.42,
+        0.93,
+        1.02,
+        3
+    );
 };
 
 //==================================================
@@ -349,6 +357,14 @@ empurrar = function(_actor)
     criar_poeira(
         _direcao_x,
         _direcao_y
+    );
+    
+    scr_play_sfx(
+        snd_box_push,
+        0.48,
+        0.96,
+        1.04,
+        3
     );
     
     return true;

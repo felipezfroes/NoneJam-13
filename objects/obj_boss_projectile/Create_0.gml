@@ -289,6 +289,14 @@ executar_reacao_em_cadeia = function(
 
 
     reacao_disparada = true;
+    
+    scr_play_sfx(
+        snd_chain,
+        0.66,
+        0.96,
+        1.04,
+        8
+    );
 
 
     //==================================================
@@ -483,6 +491,14 @@ processar_impacto_player = function(
         instance_destroy();
         return true;
     }
+    
+    scr_play_sfx(
+        snd_temporal_burst,
+        0.64,
+        0.62,
+        0.72,
+        8
+    );
 
 
     //==================================================

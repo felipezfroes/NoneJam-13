@@ -790,6 +790,65 @@ ataque_orbes = function()
 
 executar_ataque = function()
 {
+    //==================================================
+   // SOM DO ATAQUE
+   //==================================================
+   
+   switch (ataque_atual)
+   {
+       case BossAttack.principal:
+       {
+           scr_play_sfx(
+               snd_boss_shot_main,
+               0.70,
+               0.82,
+               0.88,
+               7
+           );
+   
+           break;
+       }
+   
+       case BossAttack.cruz:
+       {
+           scr_play_sfx(
+               snd_boss_shot,
+               0.38,
+               0.98,
+               1.04,
+               4
+           );
+   
+           break;
+       }
+   
+       case BossAttack.diagonal:
+       {
+           scr_play_sfx(
+               snd_boss_shot,
+               0.42,
+               1.10,
+               1.16,
+               4
+           );
+   
+           break;
+       }
+   
+       case BossAttack.orbes:
+       {
+           scr_play_sfx(
+               snd_boss_shot,
+               0.46,
+               0.82,
+               0.90,
+               5
+           );
+   
+           break;
+       }
+   }
+    
     switch (ataque_atual)
     {
         case BossAttack.principal:
@@ -856,6 +915,14 @@ maquina_de_estado = function()
                 {
                     ativado = true;
 
+                    scr_play_sfx(
+                        snd_boss_awaken,
+                        0.62,
+                        0.96,
+                        1.00,
+                        8
+                    );
+                    
                     estado =
                         BossState.esperando;
 
@@ -1127,6 +1194,14 @@ maquina_de_estado = function()
                 && !derrota_explosao_final
             )
             {
+                 scr_play_sfx(
+                    snd_boss_death,
+                    0.90,
+                    0.88,
+                    0.94,
+                    10
+                );
+                
                 derrota_explosao_final = true;
         
                 image_alpha = 0;
@@ -1153,8 +1228,15 @@ maquina_de_estado = function()
                 && !derrota_conclusao_enviada
             )
             {
-                derrota_conclusao_enviada =
-                    true;
+                derrota_conclusao_enviada = true;
+
+                scr_play_sfx(
+                    snd_victory,
+                    0.52,
+                    0.98,
+                    1.00,
+                    9
+                );
         
                 var _manager =
                     instance_find(

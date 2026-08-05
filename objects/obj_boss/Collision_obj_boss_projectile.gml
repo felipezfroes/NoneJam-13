@@ -44,6 +44,14 @@ if (invulneravel)
 
 vida--;
 
+scr_play_sfx(
+    snd_boss_hit,
+    0.76,
+    0.88,
+    0.96,
+    9
+);
+
 invulneravel = true;
 
 estado = BossState.atingido;

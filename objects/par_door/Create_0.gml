@@ -98,14 +98,43 @@ definir_aberta = function(_novo_estado)
     }
 
     aberta = _novo_estado;
-
+    
+    //==================================================
+    // SOM DA PORTA
+    //==================================================
+    
     if (aberta)
     {
         remover_bloqueador();
+        
+        scr_play_sfx(
+            snd_door_open,
+            0.48,
+            0.96,
+            1.02,
+            4
+        );
     }
     else
     {
         criar_bloqueador();
+        
+        scr_play_sfx(
+            snd_door_close,
+            0.42,
+            0.94,
+            1.00,
+            4
+        );
+    }
+
+    if (aberta)
+    {
+        
+    }
+    else
+    {
+        
     }
 };
 

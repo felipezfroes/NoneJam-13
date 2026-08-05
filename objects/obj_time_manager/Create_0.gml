@@ -144,7 +144,21 @@ criar_eco_teste = function()
 
     eco_criado = true;
     gravando = false;
-
+    
+    
+    //==================================================
+    // SOM TEMPORAL
+    //==================================================
+    
+    scr_play_sfx(
+        snd_temporal_burst,
+        0.62,
+        1.08,
+        1.16,
+        6
+    );
+    
+    
     return eco_id;
 };
 
@@ -320,7 +334,18 @@ iniciar_transicao_room = function(
     {
         return false;
     }
-
+    
+    //==================================================
+    // SOM DA TRANSIÇÃO
+    //==================================================
+    
+    scr_play_sfx(
+        snd_transition,
+        0.52,
+        0.98,
+        1.02,
+        6
+    );
 
     transicao_room_destino =
         _room_destino;
@@ -366,3 +391,22 @@ iniciar_transicao_room = function(
 
     return true;
 };
+
+//==================================================
+// AMBIENTE DE RELÓGIO
+//==================================================
+
+if (!audio_is_playing(snd_clock_ambient))
+{
+    var _clock_audio = audio_play_sound(
+        snd_clock_ambient,
+        0,
+        true
+    );
+
+    audio_sound_gain(
+        _clock_audio,
+        0.11,
+        0
+    );
+}

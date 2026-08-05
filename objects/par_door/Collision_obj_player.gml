@@ -11,14 +11,29 @@ switch (acao)
         break;
     }
 
-    // Saída para outra room.
     case DoorAction.trocar_sala:
     {
-        if (sala_destino != noone)
+        if (sala_destino == noone)
+        {
+            break;
+        }
+    
+        var _manager = instance_find(
+            obj_time_manager,
+            0
+        );
+    
+        if (instance_exists(_manager))
+        {
+            (_manager).iniciar_transicao_room(
+                sala_destino
+            );
+        }
+        else
         {
             room_goto(sala_destino);
         }
-
+    
         break;
     }
 
