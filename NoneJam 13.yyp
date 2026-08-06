@@ -53,6 +53,7 @@
   "name":"NoneJam 13",
   "resources":[
     {"id":{"name":"fnt_01","path":"fonts/fnt_01/fnt_01.yy",},},
+    {"id":{"name":"fnt_texto","path":"fonts/fnt_texto/fnt_texto.yy",},},
     {"id":{"name":"obj_animated_vfx","path":"objects/obj_animated_vfx/obj_animated_vfx.yy",},},
     {"id":{"name":"obj_boss_orb","path":"objects/obj_boss_orb/obj_boss_orb.yy",},},
     {"id":{"name":"obj_boss_projectile","path":"objects/obj_boss_projectile/obj_boss_projectile.yy",},},

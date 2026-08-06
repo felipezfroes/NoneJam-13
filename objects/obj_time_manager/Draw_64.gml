@@ -29,9 +29,8 @@ draw_set_font(fnt_01);
 draw_set_alpha(1);
 draw_set_color(c_white);
 
-
 //==================================================
-// TEXTO DO ESTADO
+// HUD DE GAMEPLAY
 //==================================================
 
 if (
@@ -39,80 +38,389 @@ if (
     && !_tela_final_ativa
 )
 {
-    if (vitoria)
-    {
-        draw_text(
-            _gui_x,
-            _gui_y,
-            "MVP CONCLUIDO!"
-            + "\nO eco abriu a porta."
-            + "\nR: reiniciar o teste"
+    var _gui_width =
+        display_get_gui_width();
+
+    var _gui_height =
+        display_get_gui_height();
+
+
+    //==================================================
+    // CONFIGURAÇÃO
+    //==================================================
+
+    var _hud_x = 10;
+    var _hud_y = 10;
+
+    var _hud_largura =
+        min(
+            185,
+            _gui_width - 20
         );
-    }
-    else if (!eco_criado)
-    {
-        draw_text(
-            _gui_x,
-            _gui_y,
-            "OBJETIVO: alcance a porta"
-            + "\n2. SPACE: eco."
-            + "\nR: reiniciar"
+
+    var _hud_padding = 8;
+
+    var _linha_altura = 17;
+
+    var _cor_fundo =
+        make_color_rgb(
+            4,
+            12,
+            18
         );
-    }
-    else
+
+    var _cor_borda =
+        make_color_rgb(
+            52,
+            105,
+            119
+        );
+
+
+    draw_set_font(fnt_texto);
+
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
+
+
+    //==================================================
+    // DEFINIR CONTEÚDO
+    //==================================================
+
+    var _titulo =
+        "OBJETIVO";
+
+    var _linha_1 = "";
+    var _linha_2 = "";
+
+    var _mostrar_estado_eco =
+        false;
+
+
+    switch (room)
     {
-        var _estado_eco = "ECO: reproduzindo";
-    
-        var _eco = instance_find(obj_echo, 0);
-    
-        if (instance_exists(_eco))
+        case rm_tuto_temporal:
         {
-            if ((_eco).finalizado)
+            _linha_1 =
+                "Alcance a saída.";
+
+            _linha_2 =
+                !eco_criado
+                ? "ESPAÇO: criar eco"
+                : "O eco repete seu caminho.";
+
+            break;
+        }
+
+
+        case rm_tuto_caixa:
+        {
+            _linha_1 =
+                "Ative as placas.";
+
+            _linha_2 =
+                "E: mover a caixa";
+
+            _mostrar_estado_eco =
+                true;
+
+            break;
+        }
+
+
+        case rm_3:
+        {
+            _linha_1 =
+                "Abra o caminho.";
+
+            _linha_2 =
+                "Combine eco e caixa.";
+
+            _mostrar_estado_eco =
+                true;
+
+            break;
+        }
+
+
+        case rm_boss:
+        {
+            _titulo =
+                "CONFRONTO";
+
+            _linha_1 =
+                "Rebata o projétil.";
+
+            _linha_2 =
+                "E: mover a caixa";
+
+            break;
+        }
+
+
+        default:
+        {
+            _linha_1 =
+                texto_objetivo;
+
+            _linha_2 =
+                "R: reiniciar";
+
+            break;
+        }
+    }
+
+
+    //==================================================
+    // ALTURA DO PAINEL
+    //==================================================
+
+    var _painel_altura =
+        63;
+
+    if (_mostrar_estado_eco)
+    {
+        _painel_altura +=
+            _linha_altura;
+    }
+
+
+    //==================================================
+    // TEXTO
+    //==================================================
+
+    var _texto_x =
+        _hud_x
+        + _hud_padding;
+
+    var _texto_y =
+        _hud_y
+        + 7;
+
+
+    draw_set_color(c_aqua);
+    draw_set_alpha(0.92);
+
+    draw_text(
+        _texto_x,
+        _texto_y,
+        _titulo
+    );
+
+
+    draw_set_color(c_white);
+    draw_set_alpha(0.92);
+
+    draw_text(
+        _texto_x,
+        _texto_y
+            + _linha_altura,
+
+        _linha_1
+    );
+
+
+    draw_set_color(c_white);
+    draw_set_alpha(0.63);
+
+    draw_text(
+        _texto_x,
+        _texto_y
+            + _linha_altura * 2,
+
+        _linha_2
+    );
+
+
+    //==================================================
+    // ESTADO DO ECO
+    //==================================================
+
+    if (_mostrar_estado_eco)
+    {
+        var _texto_eco =
+            "ECO: não criado";
+
+        var _cor_eco =
+            make_color_rgb(
+                150,
+                165,
+                170
+            );
+
+
+        if (eco_criado)
+        {
+            _texto_eco =
+                "ECO: reproduzindo";
+
+            _cor_eco =
+                c_aqua;
+
+
+            var _eco =
+                instance_find(
+                    obj_echo,
+                    0
+                );
+
+            if (
+                instance_exists(_eco)
+                && (_eco).finalizado
+            )
             {
-                _estado_eco = "ECO: gravacao finalizada";
+                _texto_eco =
+                    "ECO: finalizado";
+
+                _cor_eco =
+                    make_color_rgb(
+                        110,
+                        170,
+                        182
+                    );
             }
         }
-    
+
+
+        draw_set_color(_cor_eco);
+        draw_set_alpha(0.82);
+
         draw_text(
-            _gui_x,
-            _gui_y,
-            "Use o eco para ativar a placa."
-            + "\nE perto da caixa: alterar o caminho."
-            + "\n" + _estado_eco
-            + "\nR: reiniciar"
+            _texto_x,
+            _texto_y
+                + _linha_altura * 3,
+
+            _texto_eco
         );
     }
-    
-    
+
+
     //==================================================
-    // BARRA DE GRAVAÇÃO
+    // BARRA TEMPORAL À DIREITA
     //==================================================
-    
-    var _barra_y = _gui_y + 76;
-    
-    draw_set_color(c_black);
-    
-    draw_sprite_ext(spr_record_bar, 0, _gui_x, _barra_y, escala,escala, 0,c_white,1);
-    
-    draw_set_color(c_aqua);
-    
-    draw_rectangle(
-        _gui_x,
-        _barra_y,
-        _gui_x + (_barra_largura * _progresso),
-        _barra_y + _barra_altura,
-        false
-    );
-    
+
+    if (
+        mostrar_barra_temporal
+        && !eco_criado
+        && room != rm_boss
+    )
+    {
+        var _spr_wid = sprite_get_width(spr_record_bar);
+        var _barra_width = _spr_wid * escala - 8;
+        var _barra_height = 8;
+
+        var _barra_x =
+            _gui_width
+            - _barra_width
+            - 20;
+
+        var _barra_y = 14;
+
+        var _progresso =
+            clamp(
+                frame_gravacao
+                / max_frames,
+                0,
+                1
+            );
+
+
+        // Título.
+        draw_set_halign(fa_right);
+
+        draw_set_color(c_white);
+        draw_set_alpha(0.58);
+
+        draw_text(
+            _gui_width - 10,
+            _barra_y,
+            "MEMÓRIA TEMPORAL"
+        );
+
+
+        // Fundo.
+        _barra_y += 38;
+
+        draw_set_color(
+            make_color_rgb(
+                4,
+                12,
+                18
+            )
+        );
+
+        draw_set_alpha(0.88);
+        
+        draw_sprite_ext(spr_record_bar, 0, _barra_x, _barra_y, escala,escala, 0,c_white,1);
+
+
+        // Preenchimento.
+        draw_set_color(c_aqua);
+        draw_set_alpha(0.88);
+
+        draw_rectangle(
+            _barra_x + 1,
+            _barra_y + 1,
+
+            _barra_x
+                + 1
+                + (
+                    _barra_width - 2
+                )
+                * _progresso,
+
+            _barra_y
+                + _barra_height
+                - 1,
+
+            false
+        );
+
+        // Tempo.
+        draw_set_color(c_white);
+        draw_set_alpha(0.50);
+
+        draw_text(
+            _gui_width - 10,
+            _barra_y + 13,
+
+            string(
+                floor(
+                    frame_gravacao
+                    / 60
+                )
+            )
+            + " / 15 s"
+        );
+    }
+
+
+    //==================================================
+    // CONTROLE FIXO NO RODAPÉ
+    //==================================================
+
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_bottom);
+
     draw_set_color(c_white);
-    
+    draw_set_alpha(0.40);
+
     draw_text(
-        _gui_x,
-        _barra_y + 14,
-        "Gravacao: "
-        + string(floor(frame_gravacao / 60))
-        + "s / 15s"
+        10,
+        _gui_height - 8,
+        "R: REINICIAR"
     );
+
+
+    //==================================================
+    // RESTAURAR
+    //==================================================
+
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
+
+    draw_set_alpha(1);
+    draw_set_color(c_white);
 }
 
 //==================================================
@@ -494,7 +802,7 @@ if (_tela_final_ativa)
     // MENSAGEM DE VITÓRIA
     //==================================================
 
-    draw_set_font(fnt_01);
+    draw_set_font(fnt_texto);
 
     draw_set_halign(fa_center);
     draw_set_valign(fa_middle);
