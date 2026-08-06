@@ -14,11 +14,8 @@ menu_tempo = 0;
 // MOUSE
 //==================================================
 
-mouse_x_anterior =
-    device_mouse_x_to_gui(0);
-
-mouse_y_anterior =
-    device_mouse_y_to_gui(0);
+mouse_x_anterior = device_mouse_x_to_gui(0);
+mouse_y_anterior = device_mouse_y_to_gui(0);
 
 
 //==================================================
@@ -28,21 +25,33 @@ mouse_y_anterior =
 transicao_ativa = false;
 transicao_alpha = 0;
 
-transicao_frames = 20;
+transicao_frames = 22;
 transicao_contador = 0;
 
 acao_pendente = "";
 
 
 //==================================================
+// INTRO / FADE-IN
+//==================================================
+
+intro_alpha = 1;
+intro_frames = 28;
+intro_contador = 0;
+
+
+//==================================================
+// FUNDO / ANIMAÇÃO
+//==================================================
+
+pulso_tempo = 0;
+
+
+//==================================================
 // CRIAR BOTÃO
 //==================================================
 
-criar_botao = function(
-    _texto,
-    _acao,
-    _indice
-)
+criar_botao = function(_texto, _acao, _indice)
 {
     var _botao = instance_create_depth(
         0,
@@ -51,19 +60,11 @@ criar_botao = function(
         obj_menu_button
     );
 
-    (_botao).texto =
-        _texto;
+    (_botao).texto = _texto;
+    (_botao).acao = _acao;
+    (_botao).menu_index = _indice;
 
-    (_botao).acao =
-        _acao;
-
-    (_botao).menu_index =
-        _indice;
-
-    array_push(
-        botoes,
-        _botao
-    );
+    array_push(botoes, _botao);
 
     return _botao;
 };
@@ -75,34 +76,25 @@ criar_botao = function(
 
 mudar_selecao = function(_nova_selecao)
 {
-    var _total =
-        array_length(botoes);
+    var _total = array_length(botoes);
 
     if (_total <= 0)
     {
         return;
     }
 
-    _nova_selecao =
-        (
-            _nova_selecao
-            + _total
-        )
-        mod _total;
+    _nova_selecao = (_nova_selecao + _total) mod _total;
 
     if (_nova_selecao == selecao)
     {
         return;
     }
 
-    selecao =
-        _nova_selecao;
+    selecao = _nova_selecao;
 
-
-    // Som curto de navegação.
     scr_play_sfx(
         snd_plate,
-        0.26,
+        0.25,
         1.08,
         1.14,
         3
@@ -121,15 +113,11 @@ iniciar_acao = function(_acao)
         return;
     }
 
-    acao_pendente =
-        _acao;
+    acao_pendente = _acao;
 
-    transicao_ativa =
-        true;
-
+    transicao_ativa = true;
     transicao_alpha = 0;
     transicao_contador = 0;
-
 
     scr_play_sfx(
         snd_transition,
@@ -151,13 +139,9 @@ executar_acao = function()
     {
         case "jogar":
         {
-            room_goto(
-                rm_tuto_temporal
-            );
-
+            room_goto(rm_tuto_temporal);
             break;
         }
-
 
         case "sair":
         {
@@ -168,32 +152,53 @@ executar_acao = function()
 };
 
 
+create_widgets = function()
+{
+    //--------------------------------------------------
+    // Widgets também usam escala fixa do title.
+    //--------------------------------------------------
+
+    var buff = 1.5 ;
+
+    var xx = rw - buff;
+    var yy_w = rh - buff;
+    
+    instance_create_layer(
+        xx,
+        yy_w,
+        "Instances",
+        obj_title_widget_portfolio
+    );
+
+    instance_create_layer(
+        xx - (1.5 * buff),
+        yy_w,
+        "Instances",
+        obj_title_widget_youtube
+    );
+
+    instance_create_layer(
+        xx - (3 * buff),
+        yy_w,
+        "Instances",
+        obj_title_widget_itchio
+    );
+};
+
+
 //==================================================
-// CRIAR OPÇÕES
+// CRIAR BOTÕES
 //==================================================
 
-criar_botao(
-    "JOGAR",
-    "jogar",
-    0
-);
-
-criar_botao(
-    "SAIR",
-    "sair",
-    1
-);
+criar_botao("JOGAR", "jogar", 0);
+criar_botao("SAIR",   "sair",   1);
 
 
 //==================================================
-// AMBIENTE
+// SOM AMBIENTE
 //==================================================
 
-if (
-    !audio_is_playing(
-        snd_clock_ambient
-    )
-)
+if (!audio_is_playing(snd_clock_ambient))
 {
     var _ambiente = audio_play_sound(
         snd_clock_ambient,
@@ -201,18 +206,5 @@ if (
         true
     );
 
-    audio_sound_gain(
-        _ambiente,
-        0.09,
-        0
-    );
+    audio_sound_gain(_ambiente, 0.09, 0);
 }
-
-
-//==================================================
-// CURSOR
-//==================================================
-
-window_set_cursor(
-    cr_default
-);

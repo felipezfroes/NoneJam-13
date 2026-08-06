@@ -3,71 +3,75 @@
 //==================================================
 
 menu_tempo++;
+pulso_tempo += 0.05;
 
 
 //==================================================
-// ATUALIZAR POSIÇÃO DOS BOTÕES
+// INTRO
 //==================================================
 
-var _gui_width =
-    display_get_gui_width();
+if (intro_contador < intro_frames)
+{
+    intro_contador++;
+    intro_alpha = 1 - (intro_contador / intro_frames);
+}
+else
+{
+    intro_alpha = 0;
+}
 
-var _gui_height =
-    display_get_gui_height();
 
-var _centro_x =
-    floor(_gui_width * 0.5);
+//==================================================
+// POSICIONAR BOTÕES
+//==================================================
+
+var _gui_width = display_get_gui_width();
+var _gui_height = display_get_gui_height();
+
+var _centro_x = floor(_gui_width * 0.5);
+
+//==================================================
+// POSIÇÃO DOS BOTÕES
+//==================================================
+
+// Em 448 px de altura:
+// JOGAR fica aproximadamente em Y 318;
+// SAIR fica aproximadamente em Y 372.
 
 var _inicio_y =
-    floor(_gui_height * 0.63);
+    floor(_gui_height * 0.71);
 
-var _espaco =
-    54;
+var _espaco = 54;
 
-
-for (
-    var _i = 0;
-    _i < array_length(botoes);
-    _i++
-)
+for (var _i = 0; _i < array_length(botoes); _i++)
 {
-    var _botao =
-        botoes[_i];
+    var _botao = botoes[_i];
 
     if (!instance_exists(_botao))
     {
         continue;
     }
 
-    (_botao).gui_x =
-        _centro_x;
-
-    (_botao).gui_y =
-        _inicio_y
-        + _i * _espaco;
+    (_botao).gui_x = _centro_x;
+    (_botao).gui_y = _inicio_y + _i * _espaco;
 }
 
 
 //==================================================
-// TRANSIÇÃO ATIVA
+// TRANSIÇÃO
 //==================================================
 
 if (transicao_ativa)
 {
     transicao_contador++;
 
-    transicao_alpha =
-        clamp(
-            transicao_contador
-            / transicao_frames,
-            0,
-            1
-        );
+    transicao_alpha = clamp(
+        transicao_contador / transicao_frames,
+        0,
+        1
+    );
 
-    if (
-        transicao_contador
-        >= transicao_frames
-    )
+    if (transicao_contador >= transicao_frames)
     {
         executar_acao();
     }
@@ -77,27 +81,15 @@ if (transicao_ativa)
 
 
 //==================================================
-// MOUSE NA GUI
+// LEITURA DO MOUSE
 //==================================================
 
-var _mouse_x =
-    device_mouse_x_to_gui(0);
-
-var _mouse_y =
-    device_mouse_y_to_gui(0);
+var _mouse_x = device_mouse_x_to_gui(0);
+var _mouse_y = device_mouse_y_to_gui(0);
 
 var _mouse_moveu =
-    abs(
-        _mouse_x
-        - mouse_x_anterior
-    )
-    > 0.5
-    ||
-    abs(
-        _mouse_y
-        - mouse_y_anterior
-    )
-    > 0.5;
+    abs(_mouse_x - mouse_x_anterior) > 0.5
+    || abs(_mouse_y - mouse_y_anterior) > 0.5;
 
 if (_mouse_moveu)
 {
@@ -106,53 +98,43 @@ if (_mouse_moveu)
 
 
 //==================================================
-// DESCOBRIR BOTÃO SOB O MOUSE
+// HOVER DO MOUSE
 //==================================================
 
 var _hover_index = -1;
 
-for (
-    var _i = 0;
-    _i < array_length(botoes);
-    _i++
-)
+for (var _i = 0; _i < array_length(botoes); _i++)
 {
-    var _botao =
-        botoes[_i];
+    var _botao = botoes[_i];
 
     if (!instance_exists(_botao))
     {
         continue;
     }
 
-    var _metade_largura =
-        (_botao).largura * 0.5;
+    var _meia_largura =
+        (_botao).largura
+        * 0.5
+        * 1.06;
+    
+    var _meia_altura =
+        (_botao).altura
+        * 0.5
+        * 1.10;
 
-    var _metade_altura =
-        (_botao).altura * 0.5;
-
-    var _esta_hover =
+    var _hover =
         point_in_rectangle(
             _mouse_x,
             _mouse_y,
-
-            (_botao).gui_x
-                - _metade_largura,
-
-            (_botao).gui_y
-                - _metade_altura,
-
-            (_botao).gui_x
-                + _metade_largura,
-
-            (_botao).gui_y
-                + _metade_altura
+            (_botao).gui_x - _meia_largura,
+            (_botao).gui_y - _meia_altura,
+            (_botao).gui_x + _meia_largura,
+            (_botao).gui_y + _meia_altura
         );
 
-    (_botao).hover =
-        _esta_hover;
+    (_botao).hover = _hover;
 
-    if (_esta_hover)
+    if (_hover)
     {
         _hover_index = _i;
     }
@@ -163,90 +145,49 @@ for (
 // SELEÇÃO PELO MOUSE
 //==================================================
 
-if (
-    usando_mouse
-    && _hover_index >= 0
-)
+if (usando_mouse && _hover_index >= 0)
 {
-    mudar_selecao(
-        _hover_index
-    );
+    mudar_selecao(_hover_index);
 }
 
 
 //==================================================
-// SELEÇÃO PELO TECLADO
+// TECLADO
 //==================================================
 
-var _pressionou_baixo =
-    keyboard_check_pressed(
-        vk_down
-    )
-    ||
-    keyboard_check_pressed(
-        ord("S")
-    );
+var _baixo =
+    keyboard_check_pressed(vk_down)
+    || keyboard_check_pressed(ord("S"));
 
-var _pressionou_cima =
-    keyboard_check_pressed(
-        vk_up
-    )
-    ||
-    keyboard_check_pressed(
-        ord("W")
-    );
+var _cima =
+    keyboard_check_pressed(vk_up)
+    || keyboard_check_pressed(ord("W"));
 
-var _movimento_menu =
-    _pressionou_baixo
-    - _pressionou_cima;
+var _delta_menu = _baixo - _cima;
 
-
-if (_movimento_menu != 0)
+if (_delta_menu != 0)
 {
     usando_mouse = false;
-
-    mudar_selecao(
-        selecao
-        + sign(_movimento_menu)
-    );
+    mudar_selecao(selecao + sign(_delta_menu));
 }
 
 
 //==================================================
-// CLIQUE DO MOUSE
+// CONFIRMAÇÃO
 //==================================================
 
 var _confirmar = false;
 
-if (
-    mouse_check_button_pressed(
-        mb_left
-    )
-    && _hover_index >= 0
-)
+if (mouse_check_button_pressed(mb_left) && _hover_index >= 0)
 {
     usando_mouse = true;
-
-    mudar_selecao(
-        _hover_index
-    );
-
+    mudar_selecao(_hover_index);
     _confirmar = true;
 }
 
-
-//==================================================
-// CONFIRMAR PELO TECLADO
-//==================================================
-
 if (
-    keyboard_check_pressed(
-        vk_enter
-    )
-    ||
-    keyboard_check_pressed(
-        vk_space
-    )
+    keyboard_check_pressed(vk_enter)
+    || keyboard_check_pressed(vk_space)
 )
 {
     _confirmar = true;
@@ -257,44 +198,30 @@ if (
 // ESC PARA SAIR
 //==================================================
 
-if (
-    keyboard_check_pressed(
-        vk_escape
-    )
-)
+if (keyboard_check_pressed(vk_escape))
 {
-    iniciar_acao(
-        "sair"
-    );
-
+    iniciar_acao("sair");
     exit;
 }
 
 
 //==================================================
-// EXECUTAR BOTÃO SELECIONADO
+// EXECUTAR BOTÃO
 //==================================================
 
 if (_confirmar)
 {
-    var _botao_selecionado =
-        botoes[selecao];
+    var _botao_selecionado = botoes[selecao];
 
-    if (
-        instance_exists(
-            _botao_selecionado
-        )
-    )
+    if (instance_exists(_botao_selecionado))
     {
-        iniciar_acao(
-            (_botao_selecionado).acao
-        );
+        iniciar_acao((_botao_selecionado).acao);
     }
 }
 
 
 //==================================================
-// ATUALIZAR VISUAL DOS BOTÕES
+// VISUAL DOS BOTÕES
 //==================================================
 
 for (
@@ -311,29 +238,49 @@ for (
         continue;
     }
 
+
     (_botao).selecionado =
         _i == selecao;
 
-    var _escala_alvo =
-        (_botao).selecionado
-        ? 1.06
-        : 1;
+
+    var _escala_alvo = 1;
+    var _brilho_alvo = 0;
+
+
+    // Seleção por teclado ou mouse.
+    if ((_botao).selecionado)
+    {
+        _escala_alvo = 1.045;
+        _brilho_alvo = 1;
+    }
+
+    // Mouse apenas passando pelo botão.
+    else if ((_botao).hover)
+    {
+        _escala_alvo = 1.02;
+        _brilho_alvo = 0.45;
+    }
+
 
     (_botao).escala_visual =
         lerp(
             (_botao).escala_visual,
             _escala_alvo,
-            0.22
+            0.20
+        );
+
+    (_botao).brilho_visual =
+        lerp(
+            (_botao).brilho_visual,
+            _brilho_alvo,
+            0.17
         );
 }
 
 
 //==================================================
-// GUARDAR POSIÇÃO DO MOUSE
+// GUARDAR MOUSE
 //==================================================
 
-mouse_x_anterior =
-    _mouse_x;
-
-mouse_y_anterior =
-    _mouse_y;
+mouse_x_anterior = _mouse_x;
+mouse_y_anterior = _mouse_y;

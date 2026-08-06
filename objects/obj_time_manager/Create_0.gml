@@ -31,7 +31,7 @@ tela_final_delay_input = 45;
 // Enquanto a room de menu não existir,
 // reinicia diretamente no primeiro tutorial.
 tela_final_room_destino =
-    rm_tuto_temporal;
+    rm_menu;
 
 permite_eco = true;
 mostrar_barra_temporal = true;
