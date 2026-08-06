@@ -128,6 +128,7 @@
   "pointRounding":0,
   "ranges":[
     {"lower":32,"upper":255,},
+    {"lower":8226,"upper":8226,},
     {"lower":9647,"upper":9647,},
   ],
   "regenerateBitmap":false,

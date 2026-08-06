@@ -25,19 +25,144 @@ vitoria = false;
 tela_final_alpha = 0;
 tela_final_tempo = 0;
 
-// Evita que o jogador pule a tela imediatamente.
 tela_final_delay_input = 45;
 
-// Enquanto a room de menu não existir,
-// reinicia diretamente no primeiro tutorial.
-tela_final_room_destino =
-    rm_menu;
 
-permite_eco = true;
-mostrar_barra_temporal = true;
+//==================================================
+// OPÇÕES
+//==================================================
 
-texto_objetivo = "OBJETIVO: alcance a saída";
-texto_conclusao = "FASE CONCLUÍDA!";
+tela_final_opcoes =
+[
+    "VOLTAR",
+    "SAIR"
+];
+
+tela_final_selecao = 0;
+tela_final_hover_index = -1;
+
+tela_final_usando_mouse = false;
+
+tela_final_mouse_x_anterior =
+    device_mouse_x_to_gui(0);
+
+tela_final_mouse_y_anterior =
+    device_mouse_y_to_gui(0);
+
+
+//==================================================
+// VISUAL DOS BOTÕES
+//==================================================
+
+tela_final_botao_escala =
+[
+    1,
+    1
+];
+
+tela_final_botao_brilho =
+[
+    0,
+    0
+];
+
+tela_final_botao_x = 0;
+tela_final_botao_inicio_y = 0;
+tela_final_botao_espaco = 54;
+
+tela_final_escala_base_atual = 3;
+
+
+//==================================================
+// SAÍDA DA TELA FINAL
+//==================================================
+
+tela_final_saida_ativa = false;
+tela_final_saida_alpha = 0;
+
+tela_final_saida_contador = 0;
+tela_final_saida_frames = 22;
+
+tela_final_acao_pendente = "";
+
+
+//==================================================
+// MUDAR SELEÇÃO
+//==================================================
+
+tela_final_mudar_selecao = function(
+    _nova_selecao
+)
+{
+    var _total =
+        array_length(
+            tela_final_opcoes
+        );
+
+    if (_total <= 0)
+    {
+        return;
+    }
+
+    _nova_selecao =
+        (
+            _nova_selecao
+            + _total
+        )
+        mod _total;
+
+    if (
+        _nova_selecao
+        == tela_final_selecao
+    )
+    {
+        return;
+    }
+
+    tela_final_selecao =
+        _nova_selecao;
+
+
+    scr_play_sfx(
+        snd_plate,
+        0.26,
+        1.08,
+        1.14,
+        3
+    );
+};
+
+
+//==================================================
+// INICIAR AÇÃO FINAL
+//==================================================
+
+tela_final_iniciar_acao = function(
+    _acao
+)
+{
+    if (tela_final_saida_ativa)
+    {
+        return;
+    }
+
+    tela_final_acao_pendente =
+        _acao;
+
+    tela_final_saida_ativa = true;
+
+    tela_final_saida_alpha = 0;
+    tela_final_saida_contador = 0;
+
+
+    scr_play_sfx(
+        snd_transition,
+        0.48,
+        0.98,
+        1.02,
+        6
+    );
+};
 
 
 //==================================================
