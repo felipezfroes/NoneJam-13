@@ -1,8 +1,10 @@
-// Inherit the parent event
 event_inherited();
 
-action = function () {
-    url_open("https://fzf-productions.itch.io/ecos-do-olimpo");
-}
+tooltip = "ITCH.IO";
 
-name = "Itch.io";
+action = function()
+{
+    url_open(
+        "https://fzf-productions.itch.io/"
+    );
+};

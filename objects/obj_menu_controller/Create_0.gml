@@ -46,6 +46,34 @@ intro_contador = 0;
 
 pulso_tempo = 0;
 
+//==================================================
+// WIDGETS SOCIAIS
+//==================================================
+
+widgets = [];
+
+
+//==================================================
+// CRIAR WIDGET
+//==================================================
+
+criar_widget = function(_objeto)
+{
+    var _widget = instance_create_depth(
+        0,
+        0,
+        depth,
+        _objeto
+    );
+
+    array_push(
+        widgets,
+        _widget
+    );
+
+    return _widget;
+};
+
 
 //==================================================
 // CRIAR BOTÃO
@@ -152,46 +180,29 @@ executar_acao = function()
 };
 
 
-create_widgets = function()
-{
-    //--------------------------------------------------
-    // Widgets também usam escala fixa do title.
-    //--------------------------------------------------
-
-    var buff = 1.5 ;
-
-    var xx = rw - buff;
-    var yy_w = rh - buff;
-    
-    instance_create_layer(
-        xx,
-        yy_w,
-        "Instances",
-        obj_title_widget_portfolio
-    );
-
-    instance_create_layer(
-        xx - (1.5 * buff),
-        yy_w,
-        "Instances",
-        obj_title_widget_youtube
-    );
-
-    instance_create_layer(
-        xx - (3 * buff),
-        yy_w,
-        "Instances",
-        obj_title_widget_itchio
-    );
-};
-
-
 //==================================================
 // CRIAR BOTÕES
 //==================================================
 
 criar_botao("JOGAR", "jogar", 0);
 criar_botao("SAIR",   "sair",   1);
+
+//==================================================
+// CRIAR REDES SOCIAIS
+//==================================================
+
+// Ordem visual da esquerda para a direita.
+criar_widget(
+    obj_title_widget_itchio
+);
+
+criar_widget(
+    obj_title_widget_youtube
+);
+
+criar_widget(
+    obj_title_widget_portfolio
+);
 
 
 //==================================================

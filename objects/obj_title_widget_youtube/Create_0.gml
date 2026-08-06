@@ -1,8 +1,10 @@
-// Inherit the parent event
 event_inherited();
 
-action = function () {
-    url_open("https://www.youtube.com/@FZF_Productions");
-}
+tooltip = "YOUTUBE";
 
-name = "Youtube";
+action = function()
+{
+    url_open(
+        "https://www.youtube.com/@FZF_Productions"
+    );
+};

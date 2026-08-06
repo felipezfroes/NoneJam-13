@@ -1,8 +1,10 @@
-// Inherit the parent event
 event_inherited();
 
-action = function () {
-    url_open("https://felipezfroes.com");
-}
+tooltip = "PORTFÓLIO";
 
-name = "Portfolio";
+action = function()
+{
+    url_open(
+        "https://felipezfroes.com"
+    );
+};

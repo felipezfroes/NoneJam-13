@@ -448,6 +448,292 @@ draw_text(
     "W/S OU SETAS  •  ENTER OU CLIQUE"
 );
 
+//==================================================
+// WIDGETS SOCIAIS
+//==================================================
+
+var _total_widgets =
+    array_length(widgets);
+
+var _widget_hover =
+    noone;
+
+
+//==================================================
+// IDENTIFICAÇÃO DA ÁREA
+//==================================================
+
+if (_total_widgets > 0)
+{
+    var _primeiro_widget =
+        widgets[0];
+
+    if (
+        instance_exists(
+            _primeiro_widget
+        )
+    )
+    {
+        draw_set_font(fnt_01);
+
+        draw_set_halign(fa_right);
+        draw_set_valign(fa_middle);
+
+        draw_set_color(c_white);
+        draw_set_alpha(0.34);
+
+        draw_text(
+            (_primeiro_widget).gui_x - 32,
+            (_primeiro_widget).gui_y,
+            "FZF PRODUCTIONS"
+        );
+    }
+}
+
+
+//==================================================
+// DESENHAR ÍCONES
+//==================================================
+
+for (
+    var _i = 0;
+    _i < _total_widgets;
+    _i++
+)
+{
+    var _widget =
+        widgets[_i];
+
+    if (!instance_exists(_widget))
+    {
+        continue;
+    }
+
+
+    var _sprite =
+        (_widget).sprite_index;
+
+    var _scale =
+        (_widget).scale_current;
+
+    var _x =
+        floor((_widget).gui_x);
+
+    var _y =
+        floor((_widget).gui_y);
+
+    var _pulso =
+        sin(
+            menu_tempo * 0.10
+            + _i
+        )
+        * 0.5
+        + 0.5;
+
+
+    //==================================================
+    // GLOW CIANO
+    //==================================================
+
+    if ((_widget).glow > 0.01)
+    {
+        draw_sprite_ext(
+            _sprite,
+            0,
+
+            _x + 2,
+            _y + 2,
+
+            _scale + 0.10,
+            _scale + 0.10,
+
+            0,
+            c_aqua,
+
+            (
+                0.15
+                + _pulso * 0.15
+            )
+            * (_widget).glow
+        );
+    }
+
+
+    //==================================================
+    // ÍCONE PRINCIPAL
+    //==================================================
+
+    var _alpha_widget =
+        (_widget).hover
+        ? 1
+        : 0.68;
+
+    draw_sprite_ext(
+        _sprite,
+        0,
+
+        _x,
+        _y,
+
+        _scale,
+        _scale,
+
+        0,
+        c_white,
+        _alpha_widget
+    );
+
+
+    if ((_widget).hover)
+    {
+        _widget_hover =
+            _widget;
+    }
+}
+
+
+//==================================================
+// TOOLTIP
+//==================================================
+
+if (instance_exists(_widget_hover))
+{
+    draw_set_font(fnt_01);
+
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_middle);
+
+
+    var _tooltip =
+        (_widget_hover).tooltip;
+
+    var _tip_x =
+        floor(
+            (_widget_hover).gui_x
+        );
+
+    var _tip_y =
+        floor(
+            (_widget_hover).gui_y
+            - 38
+        );
+
+    var _texto_largura =
+        string_width(
+            _tooltip
+        );
+
+    var _pad_x = 8;
+    var _pad_y = 5;
+
+
+    // Sombra temporal.
+    draw_set_color(c_aqua);
+    draw_set_alpha(0.20);
+
+    draw_rectangle(
+        _tip_x
+            - _texto_largura * 0.5
+            - _pad_x
+            + 2,
+
+        _tip_y
+            - string_height(_tooltip) * 0.5
+            - _pad_y
+            + 2,
+
+        _tip_x
+            + _texto_largura * 0.5
+            + _pad_x
+            + 2,
+
+        _tip_y
+            + string_height(_tooltip) * 0.5
+            + _pad_y
+            + 2,
+
+        false
+    );
+
+
+    // Fundo.
+    draw_set_color(
+        make_color_rgb(
+            6,
+            17,
+            25
+        )
+    );
+
+    draw_set_alpha(0.96);
+
+    draw_rectangle(
+        _tip_x
+            - _texto_largura * 0.5
+            - _pad_x,
+
+        _tip_y
+            - string_height(_tooltip) * 0.5
+            - _pad_y,
+
+        _tip_x
+            + _texto_largura * 0.5
+            + _pad_x,
+
+        _tip_y
+            + string_height(_tooltip) * 0.5
+            + _pad_y,
+
+        false
+    );
+
+
+    // Contorno.
+    draw_set_color(c_aqua);
+    draw_set_alpha(0.74);
+
+    draw_rectangle(
+        _tip_x
+            - _texto_largura * 0.5
+            - _pad_x,
+
+        _tip_y
+            - string_height(_tooltip) * 0.5
+            - _pad_y,
+
+        _tip_x
+            + _texto_largura * 0.5
+            + _pad_x,
+
+        _tip_y
+            + string_height(_tooltip) * 0.5
+            + _pad_y,
+
+        true
+    );
+
+
+    // Texto.
+    draw_set_color(c_white);
+    draw_set_alpha(1);
+
+    draw_text(
+        _tip_x,
+        _tip_y,
+        _tooltip
+    );
+}
+
+
+//==================================================
+// RESTAURAR
+//==================================================
+
+draw_set_halign(fa_center);
+draw_set_valign(fa_middle);
+
+draw_set_color(c_white);
+draw_set_alpha(1);
 
 //==================================================
 // VINHETA LEVE

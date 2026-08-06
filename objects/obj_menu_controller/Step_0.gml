@@ -277,6 +277,212 @@ for (
         );
 }
 
+//==================================================
+// WIDGETS SOCIAIS
+//==================================================
+
+var _total_widgets =
+    array_length(widgets);
+
+var _widget_hover_index = -1;
+
+
+//==================================================
+// POSIÇÃO
+//==================================================
+
+// Rodapé direito.
+var _widget_y =
+    _gui_height - 38;
+
+var _widget_right =
+    _gui_width - 34;
+
+var _widget_spacing = 48;
+
+
+//==================================================
+// ATUALIZAR WIDGETS
+//==================================================
+
+for (
+    var _i = 0;
+    _i < _total_widgets;
+    _i++
+)
+{
+    var _widget =
+        widgets[_i];
+
+    if (!instance_exists(_widget))
+    {
+        continue;
+    }
+
+
+    //==================================================
+    // POSICIONAMENTO
+    //==================================================
+
+    var _indice_invertido =
+        (_total_widgets - 1) - _i;
+
+    (_widget).gui_x =
+        _widget_right
+        - _indice_invertido
+        * _widget_spacing;
+
+    (_widget).gui_y =
+        _widget_y;
+
+
+    //==================================================
+    // ÁREA DO MOUSE
+    //==================================================
+
+    var _largura =
+        sprite_get_width(
+            (_widget).sprite_index
+        )
+        * (_widget).scale_base;
+
+    var _altura =
+        sprite_get_height(
+            (_widget).sprite_index
+        )
+        * (_widget).scale_base;
+
+    var _hover_widget =
+        point_in_rectangle(
+            _mouse_x,
+            _mouse_y,
+
+            (_widget).gui_x
+                - _largura * 0.60,
+
+            (_widget).gui_y
+                - _altura * 0.60,
+
+            (_widget).gui_x
+                + _largura * 0.60,
+
+            (_widget).gui_y
+                + _altura * 0.60
+        );
+
+
+    (_widget).hover =
+        _hover_widget;
+
+    if (_hover_widget)
+    {
+        _widget_hover_index =
+            _i;
+    }
+
+
+    //==================================================
+    // ANIMAÇÃO
+    //==================================================
+
+    var _scale_target =
+        (_widget).scale_base;
+
+    var _glow_target = 0;
+
+
+    if (_hover_widget)
+    {
+        _scale_target =
+            (_widget).scale_base
+            * 1.12;
+
+        _glow_target = 1;
+    }
+
+
+    if ((_widget).pressed_timer > 0)
+    {
+        (_widget).pressed_timer--;
+
+        _scale_target =
+            (_widget).scale_base
+            * 0.92;
+    }
+
+
+    (_widget).scale_target =
+        _scale_target;
+
+    (_widget).scale_current =
+        lerp(
+            (_widget).scale_current,
+            (_widget).scale_target,
+            0.22
+        );
+
+    (_widget).glow =
+        lerp(
+            (_widget).glow,
+            _glow_target,
+            0.18
+        );
+}
+
+
+//==================================================
+// CLIQUE
+//==================================================
+
+if (
+    _widget_hover_index >= 0
+    && mouse_check_button_pressed(
+        mb_left
+    )
+)
+{
+    var _widget_clicado =
+        widgets[
+            _widget_hover_index
+        ];
+
+    if (
+        instance_exists(
+            _widget_clicado
+        )
+    )
+    {
+        (_widget_clicado).
+            pressed_timer = 7;
+
+
+        scr_play_sfx(
+            snd_plate,
+            0.34,
+            1.12,
+            1.18,
+            5
+        );
+
+
+        (_widget_clicado).action();
+    }
+}
+
+
+//==================================================
+// CURSOR
+//==================================================
+
+var _mouse_interativo =
+    _hover_index >= 0
+    || _widget_hover_index >= 0;
+
+window_set_cursor(
+    _mouse_interativo
+    ? cr_handpoint
+    : cr_default
+);
 
 //==================================================
 // GUARDAR MOUSE

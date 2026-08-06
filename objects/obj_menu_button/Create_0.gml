@@ -23,7 +23,7 @@ gui_y = 0;
 sprite_botao = spr_button;
 
 // Escala inteira principal para preservar o pixel art.
-escala_base = 2;
+escala_base = 3;
 
 // Multiplicador suave usado no hover e na seleção.
 escala_visual = 1;
