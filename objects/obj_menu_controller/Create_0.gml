@@ -1,7 +1,3 @@
-//==================================================
-// CONFIGURAÇÃO DO MENU
-//==================================================
-
 botoes = [];
 
 selecao = 0;
@@ -9,18 +5,8 @@ usando_mouse = false;
 
 menu_tempo = 0;
 
-
-//==================================================
-// MOUSE
-//==================================================
-
 mouse_x_anterior = device_mouse_x_to_gui(0);
 mouse_y_anterior = device_mouse_y_to_gui(0);
-
-
-//==================================================
-// TRANSIÇÃO
-//==================================================
 
 transicao_ativa = false;
 transicao_alpha = 0;
@@ -30,32 +16,13 @@ transicao_contador = 0;
 
 acao_pendente = "";
 
-
-//==================================================
-// INTRO / FADE-IN
-//==================================================
-
 intro_alpha = 1;
 intro_frames = 28;
 intro_contador = 0;
 
-
-//==================================================
-// FUNDO / ANIMAÇÃO
-//==================================================
-
 pulso_tempo = 0;
 
-//==================================================
-// WIDGETS SOCIAIS
-//==================================================
-
 widgets = [];
-
-
-//==================================================
-// CRIAR WIDGET
-//==================================================
 
 criar_widget = function(_objeto)
 {
@@ -74,11 +41,6 @@ criar_widget = function(_objeto)
     return _widget;
 };
 
-
-//==================================================
-// CRIAR BOTÃO
-//==================================================
-
 criar_botao = function(_texto, _acao, _indice)
 {
     var _botao = instance_create_depth(
@@ -96,11 +58,6 @@ criar_botao = function(_texto, _acao, _indice)
 
     return _botao;
 };
-
-
-//==================================================
-// MUDAR SELEÇÃO
-//==================================================
 
 mudar_selecao = function(_nova_selecao)
 {
@@ -129,11 +86,6 @@ mudar_selecao = function(_nova_selecao)
     );
 };
 
-
-//==================================================
-// INICIAR AÇÃO
-//==================================================
-
 iniciar_acao = function(_acao)
 {
     if (transicao_ativa)
@@ -156,11 +108,6 @@ iniciar_acao = function(_acao)
     );
 };
 
-
-//==================================================
-// EXECUTAR AÇÃO
-//==================================================
-
 executar_acao = function()
 {
     switch (acao_pendente)
@@ -179,35 +126,14 @@ executar_acao = function()
     }
 };
 
-
-//==================================================
-// CRIAR BOTÕES
-//==================================================
-
 criar_botao("JOGAR", "jogar", 0);
 criar_botao("SAIR",   "sair",   1);
 
-//==================================================
-// CRIAR REDES SOCIAIS
-//==================================================
+criar_widget( obj_title_widget_itchio );
 
-// Ordem visual da esquerda para a direita.
-criar_widget(
-    obj_title_widget_itchio
-);
+criar_widget( obj_title_widget_youtube );
 
-criar_widget(
-    obj_title_widget_youtube
-);
-
-criar_widget(
-    obj_title_widget_portfolio
-);
-
-
-//==================================================
-// SOM AMBIENTE
-//==================================================
+criar_widget( obj_title_widget_portfolio );
 
 if (!audio_is_playing(snd_clock_ambient))
 {

@@ -1,39 +1,12 @@
-//==================================================
-// GUI
-//==================================================
-
 var _gui_width = display_get_gui_width();
 var _gui_height = display_get_gui_height();
 
 var _centro_x = floor(_gui_width * 0.5);
 var _centro_y = floor(_gui_height * 0.5);
 
-
-//==================================================
-// FUNDO EM GRADIENTE
-//==================================================
-
 draw_set_alpha(1);
 
-draw_rectangle_colour(
-    0,
-    0,
-    _gui_width,
-    _gui_height,
-
-    make_color_rgb(3, 10, 16),
-    make_color_rgb(3, 10, 16),
-
-    make_color_rgb(7, 18, 27),
-    make_color_rgb(7, 18, 27),
-
-    false
-);
-
-
-//==================================================
-// RELÓGIO DE FUNDO
-//==================================================
+draw_rectangle_colour( 0, 0, _gui_width, _gui_height, make_color_rgb(3, 10, 16), make_color_rgb(3, 10, 16), make_color_rgb(7, 18, 27), make_color_rgb(7, 18, 27), false );
 
 var _relogio_x = _centro_x;
 var _relogio_y = 118;
@@ -42,12 +15,7 @@ var _relogio_raio = 98;
 draw_set_color(c_aqua);
 draw_set_alpha(0.05);
 
-draw_circle(
-    _relogio_x,
-    _relogio_y,
-    _relogio_raio,
-    true
-);
+draw_circle( _relogio_x, _relogio_y, _relogio_raio, true );
 
 for (var _i = 0; _i < 12; _i++)
 {
@@ -59,53 +27,27 @@ for (var _i = 0; _i < 12; _i++)
     var _x2 = _relogio_x + lengthdir_x(_relogio_raio, _ang);
     var _y2 = _relogio_y + lengthdir_y(_relogio_raio, _ang);
 
-    draw_line(
-        floor(_x1), floor(_y1),
-        floor(_x2), floor(_y2)
-    );
+    draw_line( floor(_x1), floor(_y1), floor(_x2), floor(_y2) );
 }
 
 var _ang_ponteiro = -90 + menu_tempo * 0.35;
 
 draw_set_alpha(0.08);
 
-draw_line(
-    _relogio_x,
-    _relogio_y,
-    floor(_relogio_x + lengthdir_x(54, _ang_ponteiro)),
-    floor(_relogio_y + lengthdir_y(54, _ang_ponteiro))
-);
-
-
-//==================================================
-// PARTÍCULAS PIXELADAS
-//==================================================
+draw_line( _relogio_x, _relogio_y, floor(_relogio_x + lengthdir_x(54, _ang_ponteiro)), floor(_relogio_y + lengthdir_y(54, _ang_ponteiro)) );
 
 for (var _i = 0; _i < 14; _i++)
 {
     var _px = floor(((_i * 83) + menu_tempo * 0.25) mod _gui_width);
     var _py = floor(28 + ((_i * 41) mod (_gui_height - 56)));
 
-    var _a =
-        0.05
-        + ((sin(menu_tempo * 0.03 + _i) * 0.5 + 0.5) * 0.18);
+    var _a = 0.05 + ((sin(menu_tempo * 0.03 + _i) * 0.5 + 0.5) * 0.18);
 
     draw_set_color(c_aqua);
     draw_set_alpha(_a);
 
-    draw_rectangle(
-        _px,
-        _py,
-        _px + 2,
-        _py + 2,
-        false
-    );
+    draw_rectangle( _px, _py, _px + 2, _py + 2, false );
 }
-
-
-//==================================================
-// LOGO
-//==================================================
 
 if (sprite_exists(spr_logo_menu))
 {
@@ -117,55 +59,21 @@ if (sprite_exists(spr_logo_menu))
     var _max_w = _gui_width * 0.68;
     var _max_h = 142;
 
-    var _escala_logo = min(
-        _max_w / _lw,
-        _max_h / _lh
-    );
+    var _escala_logo = min( _max_w / _lw, _max_h / _lh );
 
     var _logo_centro_y = 120 + round(sin(menu_tempo * 0.035) * 3);
 
     var _ox = sprite_get_xoffset(_logo);
     var _oy = sprite_get_yoffset(_logo);
 
-    var _draw_x = floor(
-        _centro_x + (_ox - _lw * 0.5) * _escala_logo
-    );
+    var _draw_x = floor( _centro_x + (_ox - _lw * 0.5) * _escala_logo );
 
-    var _draw_y = floor(
-        _logo_centro_y + (_oy - _lh * 0.5) * _escala_logo
-    );
+    var _draw_y = floor( _logo_centro_y + (_oy - _lh * 0.5) * _escala_logo );
 
-    // Eco / glow sutil
-    draw_sprite_ext(
-        _logo,
-        0,
-        _draw_x + 2,
-        _draw_y + 2,
-        _escala_logo,
-        _escala_logo,
-        0,
-        c_aqua,
-        0.18
-    );
+    draw_sprite_ext( _logo, 0, _draw_x + 2, _draw_y + 2, _escala_logo, _escala_logo, 0, c_aqua, 0.18 );
 
-    // Principal
-    draw_sprite_ext(
-        _logo,
-        0,
-        _draw_x,
-        _draw_y,
-        _escala_logo,
-        _escala_logo,
-        0,
-        c_white,
-        1
-    );
+    draw_sprite_ext( _logo, 0, _draw_x, _draw_y, _escala_logo, _escala_logo, 0, c_white, 1 );
 }
-
-
-//==================================================
-// FRASE TEMÁTICA
-//==================================================
 
 draw_set_font(fnt_01);
 draw_set_halign(fa_center);
@@ -174,15 +82,7 @@ draw_set_valign(fa_middle);
 draw_set_color(c_aqua);
 draw_set_alpha(0.62);
 
-draw_text(
-    _centro_x,
-    220,
-    "SEUS PASSOS DEIXAM ECOS"
-);
-
-//==================================================
-// BOTÕES COM SPRITES
-//==================================================
+draw_text( _centro_x, 220, "SEUS PASSOS DEIXAM ECOS" );
 
 draw_set_font(fnt_01);
 
@@ -190,94 +90,40 @@ draw_set_halign(fa_center);
 draw_set_valign(fa_middle);
 
 
-for (
-    var _i = 0;
-    _i < array_length(botoes);
-    _i++
-)
+for ( var _i = 0; _i < array_length(botoes); _i++ )
 {
-    var _botao =
-        botoes[_i];
+    var _botao = botoes[_i];
 
     if (!instance_exists(_botao))
     {
         continue;
     }
 
+    var _sprite = (_botao).sprite_botao;
 
-    //==================================================
-    // CONFIGURAÇÃO
-    //==================================================
+    var _escala = (_botao).escala_base * (_botao).escala_visual;
 
-    var _sprite =
-        (_botao).sprite_botao;
+    var _largura_visual = sprite_get_width(_sprite) * _escala;
 
-    var _escala =
-        (_botao).escala_base
-        * (_botao).escala_visual;
+    var _pulso = sin(menu_tempo * 0.10) * 0.5 + 0.5;
 
-    var _largura_visual =
-        sprite_get_width(_sprite)
-        * _escala;
-
-    var _pulso =
-        sin(menu_tempo * 0.10)
-        * 0.5
-        + 0.5;
-
-
-    // Usa o segundo frame como selecionado,
-    // caso o sprite possua mais de um frame.
     var _frame = 0;
 
-    if (
-        (_botao).selecionado
-        && sprite_get_number(_sprite) > 1
-    )
+    if ( (_botao).selecionado && sprite_get_number(_sprite) > 1 )
     {
         _frame = 1;
     }
 
-
-    //==================================================
-    // ECO CIANO ATRÁS DO BOTÃO
-    //==================================================
-
     if ((_botao).brilho_visual > 0.01)
     {
-        var _alpha_eco =
-            (
-                0.10
-                + _pulso * 0.14
-            )
-            * (_botao).brilho_visual;
+        var _alpha_eco = ( 0.10 + _pulso * 0.14 ) * (_botao).brilho_visual;
 
-        draw_sprite_ext(
-            _sprite,
-            _frame,
-
-            floor((_botao).gui_x + 2),
-            floor((_botao).gui_y + 2),
-
-            _escala,
-            _escala,
-
-            0,
-            c_aqua,
-            _alpha_eco
-        );
+        draw_sprite_ext( _sprite, _frame, floor((_botao).gui_x + 2), floor((_botao).gui_y + 2), _escala, _escala, 0, c_aqua, _alpha_eco );
     }
 
+    var _cor_botao = c_white;
 
-    //==================================================
-    // BOTÃO PRINCIPAL
-    //==================================================
-
-    var _cor_botao =
-        c_white;
-
-    var _alpha_botao =
-        0.78;
+    var _alpha_botao = 0.78;
 
     if ((_botao).selecionado)
     {
@@ -287,114 +133,35 @@ for (
     else if ((_botao).hover)
     {
         _cor_botao =
-            make_color_rgb(
-                220,
-                245,
-                250
-            );
+            make_color_rgb( 220, 245, 250 );
 
         _alpha_botao = 0.92;
     }
 
 
-    draw_sprite_ext(
-        _sprite,
-        _frame,
-
-        floor((_botao).gui_x),
-        floor((_botao).gui_y),
-
-        _escala,
-        _escala,
-
-        0,
-        _cor_botao,
-        _alpha_botao
-    );
-
-
-    //==================================================
-    // MARCADORES
-    //==================================================
+    draw_sprite_ext( _sprite, _frame, floor((_botao).gui_x), floor((_botao).gui_y), _escala, _escala, 0, _cor_botao, _alpha_botao );
 
     if ((_botao).selecionado)
     {
-        var _escala_indicador =
-            2;
+        var _escala_indicador = 2;
 
-        var _movimento_indicador =
-            round(_pulso * 3);
+        var _movimento_indicador = round(_pulso * 3);
 
-        var _distancia_indicador =
-            _largura_visual * 0.5
-            + 13
-            + _movimento_indicador;
+        var _distancia_indicador = _largura_visual * 0.5 + 13 + _movimento_indicador;
 
-        var _alpha_indicador =
-            0.75
-            + _pulso * 0.25;
+        var _alpha_indicador = 0.75 + _pulso * 0.25;
 
+        draw_sprite_ext( spr_indicador, 0, floor( (_botao).gui_x - _distancia_indicador ), floor((_botao).gui_y), _escala_indicador, _escala_indicador, 0, c_aqua, _alpha_indicador );
 
-        // Marcador esquerdo apontando para o botão.
-        draw_sprite_ext(
-            spr_indicador,
-            0,
-
-            floor(
-                (_botao).gui_x
-                - _distancia_indicador
-            ),
-
-            floor((_botao).gui_y),
-
-            _escala_indicador,
-            _escala_indicador,
-
-            0,
-            c_aqua,
-            _alpha_indicador
-        );
-
-
-        // Marcador direito espelhado.
-        draw_sprite_ext(
-            spr_indicador,
-            0,
-
-            floor(
-                (_botao).gui_x
-                + _distancia_indicador
-            ),
-
-            floor((_botao).gui_y),
-
-            -_escala_indicador,
-            _escala_indicador,
-
-            0,
-            c_aqua,
-            _alpha_indicador
-        );
+        draw_sprite_ext( spr_indicador, 0, floor( (_botao).gui_x + _distancia_indicador ), floor((_botao).gui_y), -_escala_indicador, _escala_indicador, 0, c_aqua, _alpha_indicador );
     }
 
 
-    //==================================================
-    // TEXTO DO BOTÃO
-    //==================================================
 
-    var _escala_texto =
-        (_botao).selecionado
-        ? 1.38
-        : 1.30;
 
-    var _cor_texto =
-        (_botao).selecionado
-        ? c_white
-        : make_color_rgb(
-            215,
-            222,
-            224
-        );
+    var _escala_texto = (_botao).selecionado ? 1.38 : 1.30;
+
+    var _cor_texto = (_botao).selecionado ? c_white : make_color_rgb( 215, 222, 224 );
 
 
     // Pequena sombra ciana.
@@ -403,38 +170,15 @@ for (
         draw_set_color(c_aqua);
         draw_set_alpha(0.32);
 
-        draw_text_transformed(
-            floor((_botao).gui_x + 1),
-            floor((_botao).gui_y + 1),
-
-            (_botao).texto,
-
-            _escala_texto,
-            _escala_texto,
-            0
-        );
+        draw_text_transformed( floor((_botao).gui_x + 1), floor((_botao).gui_y + 1), (_botao).texto, _escala_texto, _escala_texto, 0 );
     }
 
 
     draw_set_color(_cor_texto);
     draw_set_alpha(1);
 
-    draw_text_transformed(
-        floor((_botao).gui_x),
-        floor((_botao).gui_y),
-
-        (_botao).texto,
-
-        _escala_texto,
-        _escala_texto,
-        0
-    );
+    draw_text_transformed( floor((_botao).gui_x), floor((_botao).gui_y), (_botao).texto, _escala_texto, _escala_texto, 0 );
 }
-
-
-//==================================================
-// RODAPÉ
-//==================================================
 
 draw_set_halign(fa_center);
 draw_set_valign(fa_middle);
@@ -442,37 +186,18 @@ draw_set_valign(fa_middle);
 draw_set_color(c_white);
 draw_set_alpha(0.52);
 
-draw_text(
-    _centro_x,
-    _gui_height - 17,
-    "W/S OU SETAS  •  ENTER OU CLIQUE"
-);
+draw_text( _centro_x, _gui_height - 17, "W/S OU SETAS  •  ENTER OU CLIQUE" );
 
-//==================================================
-// WIDGETS SOCIAIS
-//==================================================
+var _total_widgets = array_length(widgets);
 
-var _total_widgets =
-    array_length(widgets);
-
-var _widget_hover =
-    noone;
-
-
-//==================================================
-// IDENTIFICAÇÃO DA ÁREA
-//==================================================
+var _widget_hover = noone;
 
 if (_total_widgets > 0)
 {
     var _primeiro_widget =
         widgets[0];
 
-    if (
-        instance_exists(
-            _primeiro_widget
-        )
-    )
+    if ( instance_exists( _primeiro_widget ) )
     {
         draw_set_font(fnt_01);
 
@@ -482,27 +207,13 @@ if (_total_widgets > 0)
         draw_set_color(c_white);
         draw_set_alpha(0.34);
 
-        draw_text(
-            (_primeiro_widget).gui_x - 32,
-            (_primeiro_widget).gui_y,
-            "FZF PRODUCTIONS"
-        );
+        draw_text( (_primeiro_widget).gui_x - 32, (_primeiro_widget).gui_y, "FZF PRODUCTIONS" );
     }
 }
 
-
-//==================================================
-// DESENHAR ÍCONES
-//==================================================
-
-for (
-    var _i = 0;
-    _i < _total_widgets;
-    _i++
-)
+for ( var _i = 0; _i < _total_widgets; _i++ )
 {
-    var _widget =
-        widgets[_i];
+    var _widget = widgets[_i];
 
     if (!instance_exists(_widget))
     {
@@ -510,91 +221,31 @@ for (
     }
 
 
-    var _sprite =
-        (_widget).sprite_index;
+    var _sprite =(_widget).sprite_index;
 
-    var _scale =
-        (_widget).scale_current;
+    var _scale = (_widget).scale_current;
 
-    var _x =
-        floor((_widget).gui_x);
+    var _x = floor((_widget).gui_x);
 
-    var _y =
-        floor((_widget).gui_y);
+    var _y = floor((_widget).gui_y);
 
-    var _pulso =
-        sin(
-            menu_tempo * 0.10
-            + _i
-        )
-        * 0.5
-        + 0.5;
-
-
-    //==================================================
-    // GLOW CIANO
-    //==================================================
+    var _pulso = sin( menu_tempo * 0.10 + _i ) * 0.5 + 0.5;
 
     if ((_widget).glow > 0.01)
     {
-        draw_sprite_ext(
-            _sprite,
-            0,
-
-            _x + 2,
-            _y + 2,
-
-            _scale + 0.10,
-            _scale + 0.10,
-
-            0,
-            c_aqua,
-
-            (
-                0.15
-                + _pulso * 0.15
-            )
-            * (_widget).glow
-        );
+        draw_sprite_ext( _sprite, 0, _x + 2, _y + 2, _scale + 0.10, _scale + 0.10, 0, c_aqua, ( 0.15 + _pulso * 0.15 ) * (_widget).glow );
     }
 
+    var _alpha_widget = (_widget).hover ? 1 : 0.68;
 
-    //==================================================
-    // ÍCONE PRINCIPAL
-    //==================================================
-
-    var _alpha_widget =
-        (_widget).hover
-        ? 1
-        : 0.68;
-
-    draw_sprite_ext(
-        _sprite,
-        0,
-
-        _x,
-        _y,
-
-        _scale,
-        _scale,
-
-        0,
-        c_white,
-        _alpha_widget
-    );
+    draw_sprite_ext( _sprite, 0, _x, _y, _scale, _scale, 0, c_white, _alpha_widget );
 
 
     if ((_widget).hover)
     {
-        _widget_hover =
-            _widget;
+        _widget_hover = _widget;
     }
 }
-
-
-//==================================================
-// TOOLTIP
-//==================================================
 
 if (instance_exists(_widget_hover))
 {
@@ -604,140 +255,44 @@ if (instance_exists(_widget_hover))
     draw_set_valign(fa_middle);
 
 
-    var _tooltip =
-        (_widget_hover).tooltip;
+    var _tooltip = (_widget_hover).tooltip;
 
-    var _tip_x =
-        floor(
-            (_widget_hover).gui_x
-        );
+    var _tip_x = floor( (_widget_hover).gui_x );
 
-    var _tip_y =
-        floor(
-            (_widget_hover).gui_y
-            - 38
-        );
+    var _tip_y = floor( (_widget_hover).gui_y - 38 );
 
-    var _texto_largura =
-        string_width(
-            _tooltip
-        );
+    var _texto_largura = string_width( _tooltip );
 
     var _pad_x = 8;
     var _pad_y = 5;
 
-
-    // Sombra temporal.
     draw_set_color(c_aqua);
     draw_set_alpha(0.20);
 
-    draw_rectangle(
-        _tip_x
-            - _texto_largura * 0.5
-            - _pad_x
-            + 2,
+    draw_rectangle( _tip_x - _texto_largura * 0.5 - _pad_x + 2, _tip_y - string_height(_tooltip) * 0.5 - _pad_y + 2, _tip_x + _texto_largura * 0.5 + _pad_x + 2, _tip_y + string_height(_tooltip) * 0.5 + _pad_y + 2, false );
 
-        _tip_y
-            - string_height(_tooltip) * 0.5
-            - _pad_y
-            + 2,
-
-        _tip_x
-            + _texto_largura * 0.5
-            + _pad_x
-            + 2,
-
-        _tip_y
-            + string_height(_tooltip) * 0.5
-            + _pad_y
-            + 2,
-
-        false
-    );
-
-
-    // Fundo.
-    draw_set_color(
-        make_color_rgb(
-            6,
-            17,
-            25
-        )
-    );
+    draw_set_color( make_color_rgb( 6, 17,25) );
 
     draw_set_alpha(0.96);
 
-    draw_rectangle(
-        _tip_x
-            - _texto_largura * 0.5
-            - _pad_x,
+    draw_rectangle( _tip_x - _texto_largura * 0.5 - _pad_x, _tip_y - string_height(_tooltip) * 0.5 - _pad_y, _tip_x + _texto_largura * 0.5 + _pad_x, _tip_y + string_height(_tooltip) * 0.5 + _pad_y, false );
 
-        _tip_y
-            - string_height(_tooltip) * 0.5
-            - _pad_y,
-
-        _tip_x
-            + _texto_largura * 0.5
-            + _pad_x,
-
-        _tip_y
-            + string_height(_tooltip) * 0.5
-            + _pad_y,
-
-        false
-    );
-
-
-    // Contorno.
     draw_set_color(c_aqua);
     draw_set_alpha(0.74);
 
-    draw_rectangle(
-        _tip_x
-            - _texto_largura * 0.5
-            - _pad_x,
+    draw_rectangle( _tip_x - _texto_largura * 0.5 - _pad_x, _tip_y - string_height(_tooltip) * 0.5 - _pad_y, _tip_x + _texto_largura * 0.5 + _pad_x, _tip_y + string_height(_tooltip) * 0.5 + _pad_y, true );
 
-        _tip_y
-            - string_height(_tooltip) * 0.5
-            - _pad_y,
-
-        _tip_x
-            + _texto_largura * 0.5
-            + _pad_x,
-
-        _tip_y
-            + string_height(_tooltip) * 0.5
-            + _pad_y,
-
-        true
-    );
-
-
-    // Texto.
     draw_set_color(c_white);
     draw_set_alpha(1);
 
-    draw_text(
-        _tip_x,
-        _tip_y,
-        _tooltip
-    );
+    draw_text( _tip_x, _tip_y, _tooltip );
 }
-
-
-//==================================================
-// RESTAURAR
-//==================================================
 
 draw_set_halign(fa_center);
 draw_set_valign(fa_middle);
 
 draw_set_color(c_white);
 draw_set_alpha(1);
-
-//==================================================
-// VINHETA LEVE
-//==================================================
 
 draw_set_color(c_black);
 draw_set_alpha(0.10);
@@ -747,48 +302,21 @@ draw_rectangle(0, _gui_height - 12, _gui_width, _gui_height, false);
 draw_rectangle(0, 0, 12, _gui_height, false);
 draw_rectangle(_gui_width - 12, 0, _gui_width, _gui_height, false);
 
-
-//==================================================
-// TRANSIÇÃO
-//==================================================
-
 if (transicao_alpha > 0)
 {
     draw_set_color(c_black);
     draw_set_alpha(transicao_alpha);
 
-    draw_rectangle(
-        0,
-        0,
-        _gui_width,
-        _gui_height,
-        false
-    );
+    draw_rectangle(0, 0, _gui_width, _gui_height, false );
 }
-
-
-//==================================================
-// INTRO
-//==================================================
 
 if (intro_alpha > 0)
 {
     draw_set_color(c_black);
     draw_set_alpha(intro_alpha);
 
-    draw_rectangle(
-        0,
-        0,
-        _gui_width,
-        _gui_height,
-        false
-    );
+    draw_rectangle(0, 0, _gui_width, _gui_height, false );
 }
-
-
-//==================================================
-// RESTAURAR DRAW
-//==================================================
 
 draw_set_halign(fa_left);
 draw_set_valign(fa_top);
